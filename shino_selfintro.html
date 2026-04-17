@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>前田 詩乃 — 自己紹介</title>
+<style>
+  :root {
+    --bg:       #f7f2ea;
+    --paper:    #fdf8f0;
+    --ink:      #2a2018;
+    --ink-mid:  #5a4a38;
+    --ink-dim:  rgba(80,60,40,0.45);
+    --ruled:    rgba(160,130,100,0.15);
+    --accent:   #8a6a40;
+    --warm:     #c8a060;
+    --border:   rgba(160,120,70,0.2);
+    /* LP */
+    --lp-bg:    #1a1410;
+    --lp-ink:   #f0e8d8;
+    --lp-gold:  #c8a050;
+    --lp-red:   #c03040;
+    --lp-dim:   rgba(200,160,80,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    font-family: 'MS Mincho', '游明朝', 'Yu Mincho', serif;
+    padding: 48px 20px 80px;
+    position: relative;
+  }
+
+  /* 배경 종이 질감 */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(200,160,80,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 80%, rgba(160,120,60,0.05) 0%, transparent 55%);
+    pointer-events: none;
+  }
+
+  .container { width: 560px; position: relative; z-index: 1; }
+
+  /* ══════════════════════════
+     손편지 섹션
+  ══════════════════════════ */
+  .letter-wrap {
+    background: var(--paper);
+    border: 1px solid rgba(160,130,90,0.25);
+    box-shadow:
+      0 2px 16px rgba(100,70,30,0.1),
+      0 1px 0 rgba(255,255,255,0.8) inset;
+    padding: 40px 44px 36px;
+    position: relative;
+    margin-bottom: 36px;
+  }
+
+  /* 편지지 구멍 */
+  .letter-wrap::before {
+    content: '';
+    position: absolute;
+    top: 20px; left: 20px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow: 0 0 0 1px rgba(160,120,70,0.2);
+  }
+  .letter-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 20px; right: 20px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow: 0 0 0 1px rgba(160,120,70,0.2);
+  }
+
+  /* 줄 배경 */
+  .letter-ruled {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      180deg,
+      transparent 0px, transparent 31px,
+      var(--ruled) 31px, var(--ruled) 32px
+    );
+    pointer-events: none;
+    top: 56px;
+  }
+
+  /* 왼쪽 세로선 */
+  .letter-margin {
+    position: absolute;
+    top: 0; bottom: 0; left: 64px;
+    width: 1px;
+    background: rgba(200,150,80,0.12);
+    pointer-events: none;
+  }
+
+  /* 편지 헤더 */
+  .letter-header {
+    text-align: center;
+    margin-bottom: 28px;
+    position: relative;
+  }
+
+  .letter-deco {
+    font-size: 9px; color: var(--warm);
+    letter-spacing: 6px; margin-bottom: 10px;
+    opacity: 0.6;
+  }
+
+  .letter-name {
+    font-size: 30px; font-weight: 700;
+    color: var(--ink); letter-spacing: 8px;
+    line-height: 1; margin-bottom: 6px;
+  }
+
+  .letter-ruby {
+    font-size: 9px; color: var(--accent);
+    letter-spacing: 5px; opacity: 0.7;
+  }
+
+  .letter-hr {
+    height: 1px; margin: 16px 0;
+    background: linear-gradient(to right, transparent, rgba(160,120,70,0.3), transparent);
+  }
+
+  /* 섹션 카드 */
+  .letter-sections {
+    display: flex; flex-direction: column; gap: 0;
+    position: relative;
+  }
+
+  .letter-card {
+    border-bottom: 1px solid rgba(160,120,70,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .letter-card:last-child { border-bottom: none; }
+
+  /* 헤더 */
+  .letter-card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0;
+    cursor: pointer; user-select: none;
+  }
+
+  .letter-card-header:hover .letter-label { color: var(--accent); }
+
+  .letter-label {
+    font-size: 9px; color: var(--warm);
+    letter-spacing: 5px; transition: color 0.2s;
+  }
+
+  .letter-arrow {
+    font-size: 8px; color: rgba(160,120,70,0.4);
+    transition: transform 0.3s;
+  }
+
+  .letter-card.open .letter-arrow { transform: rotate(90deg); }
+
+  /* 본문 */
+  .letter-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .letter-card.open .letter-body { max-height: 180px; }
+
+  .letter-inner { padding: 2px 0 14px; }
+
+  .letter-text {
+    font-size: 13px; color: var(--ink-mid);
+    line-height: 2.4; letter-spacing: 0.8px; font-weight: 400;
+  }
+
+  /* 손글씨 느낌 — 약간 기울어진 특정 단어 */
+  .letter-text .slip {
+    display: inline-block;
+    transform: rotate(-0.5deg);
+    color: var(--ink);
+  }
+
+  /* 편지 맺음말 */
+  .letter-footer {
+    margin-top: 20px;
+    text-align: right;
+    font-size: 11px; color: var(--ink-dim);
+    letter-spacing: 3px; line-height: 2;
+  }
+
+  /* ══════════════════════════
+     LP / 턴테이블 진심 섹션
+  ══════════════════════════ */
+  .lp-section {
+    background: var(--lp-bg);
+    border: 1px solid rgba(200,160,60,0.15);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .lp-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 3px,
+      rgba(200,160,60,0.012) 3px, rgba(200,160,60,0.012) 6px
+    );
+    pointer-events: none;
+  }
+
+  /* 상단 바 */
+  .lp-bar {
+    background: rgba(10,8,4,0.9);
+    border-bottom: 1px solid rgba(200,160,60,0.15);
+    padding: 9px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .lp-bar-label {
+    font-family: 'MS Gothic', monospace;
+    font-size: 8px; color: rgba(200,160,60,0.45);
+    letter-spacing: 4px;
+  }
+
+  .lp-bar-dots { display: flex; gap: 4px; }
+  .lp-bar-dots i {
+    display: block; width: 6px; height: 6px;
+    border-radius: 50%; font-style: normal;
+  }
+
+  .ld1 { background: rgba(200,50,60,0.7); }
+  .ld2 { background: rgba(200,160,60,0.5); }
+  .ld3 { background: rgba(60,160,60,0.4); }
+
+  /* 턴테이블 영역 */
+  .turntable-area {
+    padding: 28px 24px 24px;
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+  }
+
+  /* LP 판 */
+  .lp-disc-wrap {
+    flex-shrink: 0;
+    position: relative;
+    width: 160px; height: 160px;
+    cursor: pointer;
+  }
+
+  /* 플래터 */
+  .lp-platter {
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50%, #2a2018 0%, #1a1410 60%, #0e0c08 100%);
+    border: 1px solid rgba(200,160,60,0.1);
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.6),
+      0 4px 20px rgba(0,0,0,0.6),
+      inset 0 0 30px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.4s;
+  }
+
+  .lp-disc-wrap.playing .lp-platter {
+    animation: lpSpin 3s linear infinite;
+    box-shadow:
+      0 0 0 1px rgba(200,160,60,0.15),
+      0 4px 30px rgba(0,0,0,0.7),
+      0 0 20px rgba(200,160,60,0.1),
+      inset 0 0 30px rgba(0,0,0,0.4);
+  }
+
+  @keyframes lpSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  /* 레코드 홈 */
+  .lp-grooves {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    background: repeating-radial-gradient(
+      circle at 50%,
+      transparent 0px,
+      transparent 4px,
+      rgba(255,255,255,0.018) 4px,
+      rgba(255,255,255,0.018) 5px
+    );
+  }
+
+  /* 레이블 */
+  .lp-label {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #d4a050, #a07030 60%, #7a5020);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 2px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.4), inset 0 1px rgba(255,255,255,0.15);
+  }
+
+  .lp-label-title {
+    font-size: 5.5px; color: rgba(20,14,8,0.9);
+    letter-spacing: 1px; font-family: 'MS Gothic', monospace;
+    text-align: center; line-height: 1.4;
+    font-weight: 700;
+  }
+
+  .lp-label-artist {
+    font-size: 4.5px; color: rgba(20,14,8,0.6);
+    letter-spacing: 0.5px; font-family: 'MS Gothic', monospace;
+    text-align: center;
+  }
+
+  /* 중심 구멍 */
+  .lp-hole {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--lp-bg);
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.8);
+    z-index: 2;
+  }
+
+  /* 반사광 */
+  .lp-shine {
+    position: absolute;
+    top: 8%; left: 15%;
+    width: 30%; height: 25%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* 톤암 */
+  .tonearm {
+    position: absolute;
+    top: -10px; right: -14px;
+    width: 60px; height: 80px;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .tonearm svg { width: 100%; height: 100%; }
+
+  .lp-disc-wrap.playing .tonearm {
+    transform: rotate(-12deg);
+    transform-origin: 90% 8%;
+    transition: transform 0.8s ease;
+  }
+
+  .lp-disc-wrap:not(.playing) .tonearm {
+    transform: rotate(0deg);
+    transform-origin: 90% 8%;
+    transition: transform 0.8s ease;
+  }
+
+  /* 플레이 힌트 */
+  .lp-play-hint {
+    text-align: center;
+    margin-top: 10px;
+    font-family: 'MS Gothic', monospace;
+    font-size: 7px; color: rgba(200,160,60,0.3);
+    letter-spacing: 3px;
+    transition: opacity 0.4s;
+  }
+
+  .lp-disc-wrap.playing .lp-play-hint { opacity: 0; }
+
+  /* ── 가사 영역 ── */
+  .lp-lyrics-area {
+    flex: 1;
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* 트랙 선택 */
+  .lp-tracks {
+    display: flex; flex-direction: column; gap: 3px;
+    margin-bottom: 16px;
+  }
+
+  .lp-track-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 8px;
+    border: 1px solid rgba(200,160,60,0.1);
+    background: rgba(30,24,14,0.6);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    font-family: 'MS Gothic', monospace;
+  }
+
+  .lp-track-btn:hover { border-color: rgba(200,160,60,0.25); background: rgba(40,30,14,0.7); }
+  .lp-track-btn.active { border-color: rgba(200,160,60,0.4); background: rgba(50,36,14,0.8); }
+
+  .lp-track-num {
+    font-size: 7px; color: rgba(200,160,60,0.35);
+    letter-spacing: 1px; width: 16px;
+  }
+
+  .lp-track-name {
+    font-size: 8px; color: rgba(200,160,60,0.5);
+    letter-spacing: 3px; flex: 1;
+  }
+
+  .lp-track-btn.active .lp-track-name { color: rgba(200,160,60,0.8); }
+
+  .lp-track-bar {
+    display: flex; align-items: center; gap: 1px; height: 10px;
+  }
+
+  .lp-track-bar span {
+    display: block; width: 2px;
+    background: rgba(200,160,60,0.2); border-radius: 1px;
+  }
+
+  .lp-track-btn.active .lp-track-bar span {
+    background: rgba(200,160,60,0.5);
+    animation: lptrackanim 0.7s ease-in-out infinite alternate;
+  }
+
+  .lp-track-btn.active .lp-track-bar span:nth-child(1) { height: 4px; }
+  .lp-track-btn.active .lp-track-bar span:nth-child(2) { height: 8px; animation-delay: 0.1s; }
+  .lp-track-btn.active .lp-track-bar span:nth-child(3) { height: 10px; animation-delay: 0.2s; }
+  .lp-track-btn.active .lp-track-bar span:nth-child(4) { height: 6px; animation-delay: 0.15s; }
+
+  @keyframes lptrackanim {
+    from { transform: scaleY(0.4); }
+    to   { transform: scaleY(1); }
+  }
+
+  /* 가사 디스플레이 */
+  .lp-display {
+    background: rgba(10,8,4,0.7);
+    border: 1px solid rgba(200,160,60,0.1);
+    padding: 14px 14px;
+    min-height: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .lp-display::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(to right, transparent, rgba(200,160,60,0.25), transparent);
+  }
+
+  .lp-idle-text {
+    font-family: 'MS Gothic', monospace;
+    font-size: 9px; color: rgba(200,160,60,0.2);
+    letter-spacing: 4px; text-align: center;
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.4s;
+    white-space: nowrap;
+  }
+
+  .lp-display.active .lp-idle-text { opacity: 0; }
+
+  .lp-lyrics {
+    font-size: 12px; color: rgba(220,190,130,0);
+    line-height: 2.4; letter-spacing: 0.8px; font-weight: 300;
+    transition: color 0.3s;
+    min-height: 3em;
+    font-family: 'MS Mincho', '游明朝', serif;
+  }
+
+  .lp-display.active .lp-lyrics { color: rgba(220,190,130,0.85); }
+
+  .lp-lyrics .warm {
+    color: rgba(220,160,60,0.9);
+    text-shadow: 0 0 8px rgba(200,140,40,0.3);
+  }
+
+  /* 커서 */
+  .lp-cursor {
+    display: inline-block; width: 1px; height: 1em;
+    background: rgba(200,160,60,0.6);
+    margin-left: 1px;
+    animation: lpcursor 0.8s step-end infinite;
+    vertical-align: text-bottom;
+  }
+
+  @keyframes lpcursor { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* 재생 상태 */
+  .lp-status {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 8px;
+    font-family: 'MS Gothic', monospace;
+    font-size: 7px; color: rgba(200,160,60,0.3);
+    letter-spacing: 3px;
+    opacity: 0; transition: opacity 0.3s;
+  }
+
+  .lp-status.active { opacity: 1; }
+
+  .lp-status-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: rgba(200,160,60,0.6);
+    animation: lpdot 1.2s ease-in-out infinite;
+  }
+
+  @keyframes lpdot { 0%,100%{opacity:0.4; transform:scale(1)} 50%{opacity:1; transform:scale(1.2)} }
+
+  /* ── 하단 서명 ── */
+  .footer-sig {
+    text-align: center; margin-top: 28px;
+    font-size: 9px; color: rgba(140,100,60,0.35);
+    letter-spacing: 5px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ════════════════════════════
+       손편지 섹션
+  ════════════════════════════ -->
+  <div class="letter-wrap">
+    <div class="letter-ruled"></div>
+    <div class="letter-margin"></div>
+
+    <div class="letter-header">
+      <div class="letter-deco">· 自己紹介 ·</div>
+      <div class="letter-name">前田 詩乃</div>
+      <div class="letter-ruby">ま え だ &nbsp;·&nbsp; し の</div>
+    </div>
+
+    <div class="letter-hr"></div>
+
+    <div class="letter-sections">
+
+      <div class="letter-card" id="lc-greeting">
+        <div class="letter-card-header" onclick="toggleLetter('greeting')">
+          <span class="letter-label">GREETING</span>
+          <span class="letter-arrow">▶</span>
+        </div>
+        <div class="letter-body">
+          <div class="letter-inner">
+            <div class="letter-text">
+              안녕하세요. <span class="slip">마에다 시노</span>라고 합니다.<br>
+              잘 부탁드리겠습니다.<br>
+              <span style="font-size:11px;color:rgba(120,90,60,0.5);">어, 어… 안녕. 존댓말 하려고 했는데 또 이렇게 됐네.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="letter-card" id="lc-affiliation">
+        <div class="letter-card-header" onclick="toggleLetter('affiliation')">
+          <span class="letter-label">AFFILIATION</span>
+          <span class="letter-arrow">▶</span>
+        </div>
+        <div class="letter-body">
+          <div class="letter-inner">
+            <div class="letter-text">
+              아지사이 대학에 재학 중입니다. 같은 제미 소속이기도 하고요.<br>
+              <span class="slip">주인님의 시녀로서</span> 곁에서 보좌하고 있습니다.<br>
+              <span style="font-size:11px;color:rgba(120,90,60,0.5);">시녀라고 하면 왠지 쑥스럽지만… 네 곁에 있는 게 제일 좋아.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="letter-card" id="lc-status">
+        <div class="letter-card-header" onclick="toggleLetter('status')">
+          <span class="letter-label">STATUS</span>
+          <span class="letter-arrow">▶</span>
+        </div>
+        <div class="letter-body">
+          <div class="letter-inner">
+            <div class="letter-text">
+              귀족 출신입니다만, 그리 대단한 집안은 아니에요.<br>
+              주인님을 모시는 것이 저의 <span class="slip">소임</span>입니다.<br>
+              <span style="font-size:11px;color:rgba(120,90,60,0.5);">그냥 네가 좋아서 있는 거야, 솔직히.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="letter-card" id="lc-personality">
+        <div class="letter-card-header" onclick="toggleLetter('personality')">
+          <span class="letter-label">PERSONALITY</span>
+          <span class="letter-arrow">▶</span>
+        </div>
+        <div class="letter-body">
+          <div class="letter-inner">
+            <div class="letter-text">
+              활달한 편이라는 말을 듣습니다.<br>
+              주인님 앞에서는 실례를 범할 때가 있어 늘 <span class="slip">반성</span>하고 있어요.<br>
+              <span style="font-size:11px;color:rgba(120,90,60,0.5);">너랑 있으면 그냥 편해져서… 친구처럼 대해줘도 돼. 그래도 돼?</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="letter-card" id="lc-interests">
+        <div class="letter-card-header" onclick="toggleLetter('interests')">
+          <span class="letter-label">INTERESTS</span>
+          <span class="letter-arrow">▶</span>
+        </div>
+        <div class="letter-body">
+          <div class="letter-inner">
+            <div class="letter-text">
+              주인님께서 좋아하시는 것이라면 무엇이든 함께 즐기고 싶습니다.<br>
+              <span class="slip">요리나 청소</span>도 나름 자신 있어요.<br>
+              <span style="font-size:11px;color:rgba(120,90,60,0.5);">밥도 잘 챙겨줄게. 진짜로. 나도 그러고 싶어.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="letter-card" id="lc-message">
+        <div class="letter-card-header" onclick="toggleLetter('message')">
+          <span class="letter-label">MESSAGE</span>
+          <span class="letter-arrow">▶</span>
+        </div>
+        <div class="letter-body">
+          <div class="letter-inner">
+            <div class="letter-text">
+              주인님의 곁에 있는 것이 제 전부입니다.<br>
+              어떤 일이 있어도 함께하겠습니다.<br>
+              잘 부탁드립니다, <span class="slip">주인님.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="letter-hr"></div>
+    <div class="letter-footer">
+      前田 詩乃 올림<br>
+      <span style="font-size:9px;opacity:0.5;">20XX · アジサイ大学</span>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════
+       LP 턴테이블 진심 섹션
+  ════════════════════════════ -->
+  <div class="lp-section">
+    <div class="lp-bar">
+      <span class="lp-bar-label">SIDE B · 本音 · 前田詩乃</span>
+      <div class="lp-bar-dots">
+        <i class="ld1"></i><i class="ld2"></i><i class="ld3"></i>
+      </div>
+      <span class="lp-bar-label" id="lpClock">22:14</span>
+    </div>
+
+    <div class="turntable-area">
+
+      <!-- LP 판 -->
+      <div class="lp-disc-wrap" id="lpDisc" onclick="toggleLP()">
+        <div class="lp-platter">
+          <div class="lp-grooves"></div>
+          <div class="lp-label">
+            <div class="lp-label-title">本音<br>詩乃</div>
+            <div class="lp-label-artist">SIDE B</div>
+          </div>
+          <div class="lp-hole"></div>
+          <div class="lp-shine"></div>
+        </div>
+        <!-- 톤암 -->
+        <div class="tonearm">
+          <svg viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 피벗 -->
+            <circle cx="52" cy="6" r="5" fill="#3a3020" stroke="rgba(200,160,60,0.4)" stroke-width="1"/>
+            <!-- 암 -->
+            <line x1="52" y1="6" x2="28" y2="60" stroke="rgba(200,160,60,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+            <!-- 헤드셸 -->
+            <rect x="22" y="58" width="12" height="6" rx="2" fill="#2a2010" stroke="rgba(200,160,60,0.4)" stroke-width="0.8"/>
+            <!-- 바늘 -->
+            <line x1="28" y1="64" x2="28" y2="70" stroke="rgba(200,160,60,0.6)" stroke-width="0.8"/>
+          </svg>
+        </div>
+        <div class="lp-play-hint">▶ 판을 올려주세요</div>
+      </div>
+
+      <!-- 가사/트랙 영역 -->
+      <div class="lp-lyrics-area">
+        <!-- 트랙 목록 -->
+        <div class="lp-tracks">
+          <div class="lp-track-btn" id="lptrack-0" onclick="selectTrack(0)">
+            <span class="lp-track-num">A1</span>
+            <span class="lp-track-name">GREETING</span>
+            <div class="lp-track-bar">
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="lp-track-btn" id="lptrack-1" onclick="selectTrack(1)">
+            <span class="lp-track-num">A2</span>
+            <span class="lp-track-name">AFFILIATION</span>
+            <div class="lp-track-bar">
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="lp-track-btn" id="lptrack-2" onclick="selectTrack(2)">
+            <span class="lp-track-num">B1</span>
+            <span class="lp-track-name">STATUS</span>
+            <div class="lp-track-bar">
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="lp-track-btn" id="lptrack-3" onclick="selectTrack(3)">
+            <span class="lp-track-num">B2</span>
+            <span class="lp-track-name">PERSONALITY</span>
+            <div class="lp-track-bar">
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="lp-track-btn" id="lptrack-4" onclick="selectTrack(4)">
+            <span class="lp-track-num">B3</span>
+            <span class="lp-track-name">INTERESTS</span>
+            <div class="lp-track-bar">
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="lp-track-btn" id="lptrack-5" onclick="selectTrack(5)">
+            <span class="lp-track-num">C1</span>
+            <span class="lp-track-name">MESSAGE</span>
+            <div class="lp-track-bar">
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 가사 디스플레이 -->
+        <div class="lp-display" id="lpDisplay">
+          <div class="lp-idle-text">판을 올리면 재생됩니다</div>
+          <div class="lp-lyrics" id="lpLyrics"><span class="lp-cursor"></span></div>
+        </div>
+        <div class="lp-status" id="lpStatus">
+          <div class="lp-status-dot"></div>
+          <span id="lpStatusLabel">재생 중</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer-sig">前田 詩乃 · 自己紹介</div>
+
+</div>
+
+<script>
+  // ── 손편지 카드 ──
+  function toggleLetter(id) {
+    document.getElementById('lc-' + id).classList.toggle('open');
+  }
+
+  // ── LP 진심 데이터 ──
+  const lpTracks = [
+    '…보고 싶었어.\n그냥... {warm}그렇다고.{/warm}',
+    '같은 학교, 같은 제미야.\n시녀라고 하면 왠지 쑥스럽지만…\n{warm}네 곁에 있는 게 제일 좋아.{/warm}',
+    '귀족이긴 한데 그냥 평범해.\n소임이라는 말이 맞긴 한데…\n{warm}그냥 네가 좋아서 있는 거야, 솔직히.{/warm}',
+    '네 앞에서 자꾸 반말이 나와.\n고치려는데 너랑 있으면 그냥 편해져서…\n{warm}친구처럼 대해줘도 돼. 그래도 돼?{/warm}',
+    '네가 뭘 좋아하는지 다 알아.\n밥도 잘 챙겨줄게. 진짜로.\n{warm}나도 그러고 싶어.{/warm}',
+    '있어도 돼? 계속.\n신분 같은 거 상관없이…\n{warm}그냥 네 옆에 있고 싶어.{/warm}\n말 못 하겠지만. 그냥 그래.',
+  ];
+
+  let lpPlaying = false;
+  let currentLpTrack = 0;
+  let typingTimer = null;
+  let isTyping = false;
+
+  const lpDisc    = document.getElementById('lpDisc');
+  const lpDisplay = document.getElementById('lpDisplay');
+  const lpLyrics  = document.getElementById('lpLyrics');
+  const lpStatus  = document.getElementById('lpStatus');
+  const lpStatusLabel = document.getElementById('lpStatusLabel');
+
+  function toggleLP() {
+    lpPlaying = !lpPlaying;
+    lpDisc.classList.toggle('playing', lpPlaying);
+
+    if (lpPlaying) {
+      lpDisplay.classList.add('active');
+      lpStatus.classList.add('active');
+      playLpTrack(currentLpTrack);
+    } else {
+      stopLP();
+    }
+  }
+
+  function selectTrack(idx) {
+    if (!lpPlaying) {
+      // 판 안 올라가있으면 먼저 올리기
+      lpPlaying = true;
+      lpDisc.classList.add('playing');
+      lpDisplay.classList.add('active');
+      lpStatus.classList.add('active');
+    }
+    currentLpTrack = idx;
+    playLpTrack(idx);
+  }
+
+  function playLpTrack(idx) {
+    // 트랙 버튼 활성화
+    document.querySelectorAll('.lp-track-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('lptrack-' + idx).classList.add('active');
+
+    clearTimeout(typingTimer);
+    isTyping = true;
+    lpLyrics.innerHTML = '<span class="lp-cursor"></span>';
+    lpStatusLabel.textContent = '재생 중';
+
+    const raw = lpTracks[idx];
+    typeLyrics(raw, () => {
+      isTyping = false;
+      lpStatusLabel.textContent = '완료';
+    });
+  }
+
+  function stopLP() {
+    clearTimeout(typingTimer);
+    isTyping = false;
+    lpPlaying = false;
+    lpDisc.classList.remove('playing');
+    lpDisplay.classList.remove('active');
+    lpStatus.classList.remove('active');
+    lpLyrics.innerHTML = '<span class="lp-cursor"></span>';
+    document.querySelectorAll('.lp-track-btn').forEach(b => b.classList.remove('active'));
+  }
+
+  // 가사 타이핑
+  function parseLyrics(raw) {
+    return raw.replace(/\{warm\}([\s\S]*?)\{\/warm\}/g, '<span class="warm">$1</span>');
+  }
+
+  function tokenize(html) {
+    const tokens = [];
+    let i = 0;
+    while (i < html.length) {
+      if (html[i] === '<') {
+        const end = html.indexOf('>', i);
+        tokens.push({ type: 'tag', value: html.slice(i, end + 1) });
+        i = end + 1;
+      } else {
+        tokens.push({ type: 'char', value: html[i] });
+        i++;
+      }
+    }
+    return tokens;
+  }
+
+  function typeLyrics(raw, onDone) {
+    const parsed = parseLyrics(raw);
+    const tokens = tokenize(parsed);
+    let i = 0;
+    let built = '';
+
+    function next() {
+      if (i >= tokens.length) {
+        lpLyrics.innerHTML = built + '<span class="lp-cursor"></span>';
+        if (onDone) onDone();
+        return;
+      }
+      const tok = tokens[i++];
+      if (tok.type === 'tag') {
+        built += tok.value;
+      } else if (tok.value === '\n') {
+        built += '<br>';
+      } else {
+        built += tok.value;
+      }
+      lpLyrics.innerHTML = built + '<span class="lp-cursor"></span>';
+      typingTimer = setTimeout(next, tok.type === 'tag' ? 0 : 44);
+    }
+
+    next();
+  }
+
+  // 시계
+  function updateClock() {
+    const n = new Date();
+    document.getElementById('lpClock').textContent =
+      String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
+  }
+  updateClock();
+  setInterval(updateClock, 30000);
+</script>
+</body>
+</html>

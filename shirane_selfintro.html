@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>甘井 白音 — 自己紹介</title>
+<style>
+  :root {
+    --bg:        #080c14;
+    --ink:       #d8e8f8;
+    --muted:     #4a6080;
+    --blue:      #3a90d8;
+    --blue-pale: #80c0f0;
+    --blue-dim:  rgba(58,144,216,0.15);
+    --blue-line: rgba(58,144,216,0.25);
+    --blue-glow: rgba(58,144,216,0.4);
+    --border:    rgba(58,144,216,0.16);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'MS Mincho', '游明朝', 'Yu Mincho', serif;
+    padding: 40px 20px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 25%, rgba(30,80,180,0.09) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 75%, rgba(20,60,140,0.07) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 3px,
+      rgba(58,144,216,0.012) 3px, rgba(58,144,216,0.012) 6px
+    );
+    pointer-events: none; z-index: 0;
+  }
+
+  .container { width: 560px; position: relative; z-index: 1; }
+
+  /* ── 상단 장식 ── */
+  .deco-top { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+  .deco-top .l { flex: 1; height: 1px; background: linear-gradient(to right, transparent, rgba(58,144,216,0.3)); }
+  .deco-top .l.r { background: linear-gradient(to left, transparent, rgba(58,144,216,0.3)); }
+  .deco-top em { font-style: normal; font-size: 8px; color: var(--muted); letter-spacing: 5px; font-family: 'MS Gothic', monospace; }
+
+  /* ── 이름 ── */
+  .name-block { text-align: center; margin-bottom: 32px; position: relative; }
+
+  .name-crack {
+    position: absolute; top: -8px; left: 28%; right: 18%; height: 1px;
+    background: linear-gradient(to right,
+      transparent 0%, rgba(58,144,216,0.4) 20%, transparent 35%,
+      rgba(58,144,216,0.6) 50%, transparent 60%,
+      rgba(58,144,216,0.3) 80%, transparent 100%
+    );
+  }
+
+  .name-main {
+    font-size: 36px; font-weight: 700; color: var(--ink);
+    letter-spacing: 10px; line-height: 1; margin-bottom: 8px;
+    position: relative;
+    animation: nameglitch 8s ease-in-out infinite;
+  }
+
+  @keyframes nameglitch {
+    0%,92%,100% { text-shadow: none; transform: none; }
+    93%  { text-shadow: -2px 0 rgba(255,80,80,0.4), 2px 0 rgba(80,160,255,0.4); transform: skewX(-1deg); }
+    94%  { text-shadow: none; transform: none; }
+    95%  { text-shadow: 2px 0 rgba(255,80,80,0.3), -2px 0 rgba(80,160,255,0.3); transform: skewX(0.5deg); }
+    96%  { text-shadow: none; transform: none; }
+  }
+
+  .name-ruby { font-size: 8px; color: var(--muted); letter-spacing: 6px; font-family: 'MS Gothic', monospace; }
+
+  .hr { height: 1px; background: linear-gradient(to right, transparent, rgba(58,144,216,0.2), transparent); margin: 20px 0; }
+
+  /* ════ 홀로그램 섹션 ════ */
+  .holo-sections { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; position: relative; }
+
+  .holo-sections::after {
+    content: '';
+    position: absolute; top: 0; left: -4px; right: -4px; bottom: 0;
+    background:
+      linear-gradient(transparent 48%, rgba(58,144,216,0.025) 49%, transparent 50%),
+      linear-gradient(transparent 71%, rgba(58,144,216,0.03) 72%, transparent 73%);
+    pointer-events: none; z-index: 10;
+    animation: scanmove 7s linear infinite;
+  }
+
+  @keyframes scanmove {
+    from { background-position: 0 0%, 0 0%; }
+    to   { background-position: 0 300%, 0 300%; }
+  }
+
+  .holo-card {
+    border: 1px solid var(--border);
+    background: rgba(10,18,30,0.75);
+    overflow: hidden; position: relative;
+  }
+
+  .holo-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(to right,
+      rgba(58,144,216,0.3) 0%, rgba(58,144,216,0.6) 40%,
+      transparent 41%, transparent 55%,
+      rgba(58,144,216,0.4) 56%, rgba(58,144,216,0.2) 100%
+    );
+  }
+
+  .holo-card::after {
+    content: '';
+    position: absolute; top: 0; right: 0;
+    width: 0; height: 0; border-style: solid;
+    border-width: 0 12px 12px 0;
+    border-color: transparent var(--bg) transparent transparent;
+  }
+
+  .holo-card:nth-child(2) { animation: cardg1 11s ease-in-out infinite; }
+  .holo-card:nth-child(4) { animation: cardg2 9s  ease-in-out infinite; }
+
+  @keyframes cardg1 {
+    0%,88%,100% { transform: none; opacity: 1; }
+    89% { transform: translateX(2px); opacity: 0.85; }
+    90% { transform: translateX(-1px); opacity: 1; }
+    91% { transform: none; }
+  }
+  @keyframes cardg2 {
+    0%,94%,100% { transform: none; filter: none; }
+    95% { transform: translateX(-2px); filter: hue-rotate(15deg); }
+    96% { transform: translateX(1px); filter: none; }
+    97% { transform: none; }
+  }
+
+  .holo-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; cursor: pointer; user-select: none;
+    transition: background 0.2s;
+  }
+  .holo-header:hover { background: rgba(58,144,216,0.05); }
+
+  .holo-label {
+    font-family: 'MS Gothic', monospace; font-size: 8px;
+    color: rgba(80,160,240,0.6); letter-spacing: 5px;
+    text-shadow: 0 0 6px rgba(58,144,216,0.3);
+  }
+
+  .holo-signal { display: flex; align-items: center; gap: 5px; }
+  .signal-bar { display: flex; gap: 2px; align-items: flex-end; }
+  .signal-bar span { display: block; width: 2px; background: rgba(58,144,216,0.4); border-radius: 1px; }
+  .signal-bar span:nth-child(1) { height: 4px; }
+  .signal-bar span:nth-child(2) { height: 7px; opacity: 0.6; }
+  .signal-bar span:nth-child(3) { height: 10px; opacity: 0.3; }
+  .signal-bar span:nth-child(4) { height: 13px; opacity: 0.1; }
+
+  .holo-arrow { font-size: 7px; color: rgba(58,144,216,0.4); font-family: 'MS Gothic', monospace; transition: transform 0.3s; }
+  .holo-card.open .holo-arrow { transform: rotate(90deg); }
+
+  .holo-body { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1); }
+  .holo-card.open .holo-body { max-height: 200px; }
+
+  .holo-inner { padding: 4px 14px 14px; border-top: 1px solid rgba(58,144,216,0.08); }
+
+  .holo-text {
+    font-size: 12px; color: rgba(180,210,240,0.65);
+    line-height: 2.3; letter-spacing: 0.8px; font-weight: 300;
+  }
+
+  .glitch-word { display: inline-block; animation: wordg 10s ease-in-out infinite; }
+  @keyframes wordg {
+    0%,95%,100% { opacity: 1; transform: none; }
+    96% { opacity: 0.3; transform: translateX(2px); }
+    97% { opacity: 1; transform: none; }
+  }
+
+  /* ════ 진심 섹션 ════ */
+  .deleted-section {
+    border: 1px solid rgba(58,144,216,0.12);
+    background: rgba(6,12,22,0.9); overflow: hidden; position: relative;
+  }
+  .deleted-section::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(to right, transparent, rgba(58,144,216,0.3), transparent);
+  }
+
+  .deleted-bar {
+    background: rgba(10,20,36,0.95);
+    border-bottom: 1px solid rgba(58,144,216,0.1);
+    padding: 8px 14px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .deleted-bar-label { font-family: 'MS Gothic', monospace; font-size: 8px; color: rgba(80,140,200,0.45); letter-spacing: 4px; }
+  .deleted-bar-dots { display: flex; gap: 4px; }
+  .deleted-bar-dots i { display: block; width: 6px; height: 6px; border-radius: 50%; font-style: normal; }
+  .db1 { background: rgba(58,144,216,0.6); box-shadow: 0 0 4px rgba(58,144,216,0.4); }
+  .db2 { background: rgba(40,100,180,0.4); }
+  .db3 { background: rgba(30,70,140,0.3); }
+
+  .del-block {
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(58,144,216,0.07);
+    cursor: pointer; position: relative;
+    transition: background 0.2s; user-select: none;
+  }
+  .del-block:last-child { border-bottom: none; }
+  .del-block:hover:not(.restored) { background: rgba(58,144,216,0.03); }
+
+  .del-tag {
+    font-family: 'MS Gothic', monospace; font-size: 7px;
+    color: rgba(58,144,216,0.35); letter-spacing: 4px;
+    margin-bottom: 5px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .del-tag::after { content: ''; flex: 1; height: 1px; background: rgba(58,144,216,0.1); }
+
+  .del-text { font-size: 12px; line-height: 2.3; letter-spacing: 0.8px; font-weight: 300; position: relative; }
+
+  /* 가려진 상태 */
+  .del-mask {
+    color: transparent;
+    background: rgba(20,45,85,0.55);
+    border-radius: 2px;
+    display: inline;
+    transition: color 0.5s ease, background 0.5s ease;
+  }
+
+  .del-label {
+    font-family: 'MS Gothic', monospace; font-size: 8px;
+    color: rgba(58,144,216,0.35);
+    background: rgba(20,45,80,0.7);
+    padding: 0 4px;
+    border: 1px solid rgba(58,144,216,0.15);
+    border-radius: 2px; margin: 0 3px;
+    vertical-align: middle;
+    transition: all 0.3s ease;
+    display: inline;
+  }
+
+  .noise-block {
+    font-family: 'MS Gothic', monospace;
+    font-size: 10px; letter-spacing: 1px;
+    color: rgba(40,80,140,0.35);
+    display: inline;
+  }
+
+  .del-hint {
+    font-family: 'MS Gothic', monospace; font-size: 7px;
+    color: rgba(58,144,216,0.22); letter-spacing: 3px;
+    margin-top: 4px; transition: opacity 0.3s;
+  }
+
+  /* 복구된 상태 */
+  .del-block.restored { cursor: default; }
+  .del-block.restored::before {
+    content: '';
+    position: absolute; top: 0; left: 0; bottom: 0; width: 2px;
+    background: rgba(58,144,216,0.5);
+  }
+  .del-block.restored .del-mask {
+    color: rgba(160,205,245,0.82);
+    background: transparent;
+  }
+  .del-block.restored .del-label { opacity: 0; width: 0; padding: 0; margin: 0; overflow: hidden; border: none; }
+  .del-block.restored .noise-block { opacity: 0; }
+  .del-block.restored .del-hint { opacity: 0; }
+  .del-block.restored .emphasis {
+    color: rgba(120,190,255,0.95);
+    text-shadow: 0 0 8px rgba(58,144,216,0.45);
+  }
+
+  /* 복구 플래시 */
+  .del-block.restoring { animation: restoreflash 0.35s ease-out; }
+  @keyframes restoreflash {
+    0%  { background: rgba(58,144,216,0.1); }
+    100%{ background: transparent; }
+  }
+
+  .footer-sig {
+    text-align: center; margin-top: 24px;
+    font-size: 8px; color: rgba(50,90,150,0.28);
+    letter-spacing: 6px; font-family: 'MS Gothic', monospace;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="deco-top">
+    <div class="l"></div>
+    <em>自己紹介 · ERR 0x3A · SIGNAL LOST</em>
+    <div class="l r"></div>
+  </div>
+
+  <div class="name-block">
+    <div class="name-crack"></div>
+    <div class="name-main">甘井 白音</div>
+    <div class="name-ruby">あ &nbsp;ま &nbsp;い &nbsp;&nbsp;·&nbsp;&nbsp; し &nbsp;ら &nbsp;ね</div>
+  </div>
+
+  <div class="hr"></div>
+
+  <!-- ── 홀로그램 ── -->
+  <div class="holo-sections">
+
+    <div class="holo-card" id="hc-greeting">
+      <div class="holo-header" onclick="toggleHolo('greeting')">
+        <span class="holo-label">GREETING</span>
+        <div class="holo-signal"><div class="signal-bar"><span></span><span></span><span></span><span></span></div><span class="holo-arrow">▶</span></div>
+      </div>
+      <div class="holo-body"><div class="holo-inner">
+        <div class="holo-text">…뭐야. <span class="glitch-word">뭘</span> 보는 거야.<br>아, 자기소개? 이제와서?</div>
+      </div></div>
+    </div>
+
+    <div class="holo-card" id="hc-affiliation">
+      <div class="holo-header" onclick="toggleHolo('affiliation')">
+        <span class="holo-label">AFFILIATION</span>
+        <div class="holo-signal"><div class="signal-bar"><span></span><span></span><span></span><span></span></div><span class="holo-arrow">▶</span></div>
+      </div>
+      <div class="holo-body"><div class="holo-inner">
+        <div class="holo-text">아지사이 대학. 그쪽이랑 같은 제미.<br>알잖아? 딱히 <span class="glitch-word">좋아서</span> 있는 거 아니야.</div>
+      </div></div>
+    </div>
+
+    <div class="holo-card" id="hc-status">
+      <div class="holo-header" onclick="toggleHolo('status')">
+        <span class="holo-label">STATUS</span>
+        <div class="holo-signal"><div class="signal-bar"><span></span><span></span><span></span><span></span></div><span class="holo-arrow">▶</span></div>
+      </div>
+      <div class="holo-body"><div class="holo-inner">
+        <div class="holo-text">남자친구 있어. 됐지?<br>그러니까 괜한 기대 하지 마.</div>
+      </div></div>
+    </div>
+
+    <div class="holo-card" id="hc-personality">
+      <div class="holo-header" onclick="toggleHolo('personality')">
+        <span class="holo-label">PERSONALITY</span>
+        <div class="holo-signal"><div class="signal-bar"><span></span><span></span><span></span><span></span></div><span class="holo-arrow">▶</span></div>
+      </div>
+      <div class="holo-body"><div class="holo-inner">
+        <div class="holo-text">성격? 나쁘거든. 미리 알아둬.<br>사람 잘 안 믿고, 귀찮은 거 싫어해.<br><span class="glitch-word">너 때문에</span> 이렇게 됐잖아.</div>
+      </div></div>
+    </div>
+
+    <div class="holo-card" id="hc-interests">
+      <div class="holo-header" onclick="toggleHolo('interests')">
+        <span class="holo-label">INTERESTS</span>
+        <div class="holo-signal"><div class="signal-bar"><span></span><span></span><span></span><span></span></div><span class="holo-arrow">▶</span></div>
+      </div>
+      <div class="holo-body"><div class="holo-inner">
+        <div class="holo-text">알아서 뭐하게? 있을 때 잘했어야지.<br>뭐, 사람 많은 데는 별로야.</div>
+      </div></div>
+    </div>
+
+    <div class="holo-card" id="hc-message">
+      <div class="holo-header" onclick="toggleHolo('message')">
+        <span class="holo-label">MESSAGE</span>
+        <div class="holo-signal"><div class="signal-bar"><span></span><span></span><span></span><span></span></div><span class="holo-arrow">▶</span></div>
+      </div>
+      <div class="holo-body"><div class="holo-inner">
+        <div class="holo-text">가까이 오지 마.<br>너 때문에 내가 얼마나 힘들었는지 알아?<br>다신 날 찾아오지 마.</div>
+      </div></div>
+    </div>
+
+  </div>
+
+  <div class="hr"></div>
+
+  <!-- ── 진심 섹션 ── -->
+  <div class="deleted-section">
+    <div class="deleted-bar">
+      <span class="deleted-bar-label">DELETED · 복구 가능</span>
+      <div class="deleted-bar-dots"><i class="db1"></i><i class="db2"></i><i class="db3"></i></div>
+      <span class="deleted-bar-label" id="delClock">──:──</span>
+    </div>
+
+    <div class="del-block" id="del-greeting" onclick="restore('greeting')">
+      <div class="del-tag">GREETING</div>
+      <div class="del-text">
+        <span class="del-mask">…<span class="emphasis">보고 싶었어.</span> 그냥... 그렇다고.</span>
+        <span class="del-label">[DELETED]</span>
+        <span class="noise-block">░░░░░░░░░░░</span>
+      </div>
+      <div class="del-hint">▶ 클릭하여 복구</div>
+    </div>
+
+    <div class="del-block" id="del-affiliation" onclick="restore('affiliation')">
+      <div class="del-tag">AFFILIATION</div>
+      <div class="del-text">
+        <span class="del-mask">같은 제미라서 <span class="emphasis">다행이야.</span><br>적어도 일주일에 한 번은 볼 수 있으니까.</span>
+        <span class="del-label">[DELETED]</span>
+        <span class="noise-block">░░░░░░░░░</span>
+      </div>
+      <div class="del-hint">▶ 클릭하여 복구</div>
+    </div>
+
+    <div class="del-block" id="del-status" onclick="restore('status')">
+      <div class="del-tag">STATUS</div>
+      <div class="del-text">
+        <span class="del-mask">남자친구가 있는데. <span class="emphasis">왜 아직도 너 생각이 나는 건지</span> 모르겠어.<br>…이젠 모르겠어, 진짜로.</span>
+        <span class="del-label">[DELETED]</span>
+        <span class="noise-block">░░░░░░░░░░░</span>
+      </div>
+      <div class="del-hint">▶ 클릭하여 복구</div>
+    </div>
+
+    <div class="del-block" id="del-personality" onclick="restore('personality')">
+      <div class="del-tag">PERSONALITY</div>
+      <div class="del-text">
+        <span class="del-mask">솔직하고, 서툴렀어. <span class="emphasis">소중했는데.</span><br>…왜 이렇게 되어버린 걸까.</span>
+        <span class="del-label">[DELETED]</span>
+        <span class="noise-block">░░░░░░░░░</span>
+      </div>
+      <div class="del-hint">▶ 클릭하여 복구</div>
+    </div>
+
+    <div class="del-block" id="del-interests" onclick="restore('interests')">
+      <div class="del-tag">INTERESTS</div>
+      <div class="del-text">
+        <span class="del-mask">예전에 같이 간 해변 기억해?<br>…손잡고, 껴안고.<br><span class="emphasis">…지금도 그 자리에 가끔 혼자 가.</span></span>
+        <span class="del-label">[DELETED]</span>
+        <span class="noise-block">░░░░░░░░░░░░</span>
+      </div>
+      <div class="del-hint">▶ 클릭하여 복구</div>
+    </div>
+
+    <div class="del-block" id="del-message" onclick="restore('message')">
+      <div class="del-tag">MESSAGE</div>
+      <div class="del-text">
+        <span class="del-mask"><span class="emphasis">찾아와.</span> 한 번만. 한 번만 더.<br>…미워. 정말 미워. <span class="emphasis">그래도 보고 싶어.</span></span>
+        <span class="del-label">[DELETED]</span>
+        <span class="noise-block">░░░░░░░░░</span>
+      </div>
+      <div class="del-hint">▶ 클릭하여 복구</div>
+    </div>
+
+  </div>
+
+  <div class="footer-sig">甘井 白音 · 自己紹介 · FILE CORRUPTED</div>
+
+</div>
+
+<script>
+  function toggleHolo(id) {
+    document.getElementById('hc-' + id).classList.toggle('open');
+  }
+
+  function restore(id) {
+    const block = document.getElementById('del-' + id);
+    if (block.classList.contains('restored')) return;
+    block.classList.add('restoring');
+    setTimeout(() => {
+      block.classList.remove('restoring');
+      block.classList.add('restored');
+      block.onclick = null;
+    }, 350);
+  }
+
+  function updateClock() {
+    const n = new Date();
+    document.getElementById('delClock').textContent =
+      String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
+  }
+  updateClock();
+  setInterval(updateClock, 30000);
+</script>
+</body>
+</html>
