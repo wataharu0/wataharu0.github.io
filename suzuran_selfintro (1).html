@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>無量鈴 鈴蘭 — 自己紹介</title>
+<style>
+  :root {
+    --bg:     #0c080e;
+    --ink:    #f0e8f0;
+    --muted:  #6a5a70;
+    --red:    #ff2060;
+    --rose:   rgba(255,140,180,0.85);
+    --ghost:  rgba(220,180,230,0.45);
+    --border: rgba(180,80,140,0.18);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'MS Mincho', '游明朝', 'Yu Mincho', serif;
+    padding: 40px 20px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* 배경 글로우 */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse at 25% 20%, rgba(180,40,100,0.08) 0%, transparent 55%),
+      radial-gradient(ellipse at 75% 80%, rgba(100,20,140,0.07) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  /* 꽃잎 */
+  .petal {
+    position: fixed; font-size: 10px;
+    color: rgba(255,80,140,0.3);
+    pointer-events: none; z-index: 0;
+    animation: petalfall linear infinite;
+  }
+  @keyframes petalfall {
+    0%   { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.3; }
+    100% { transform: translateY(105vh) rotate(400deg) translateX(20px); opacity: 0; }
+  }
+
+  /* ══════════════════════════
+     메인 컨테이너
+  ══════════════════════════ */
+  .container {
+    width: 560px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 상단 장식 */
+  .deco-top {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 28px;
+  }
+  .deco-top .l {
+    flex: 1; height: 1px;
+    background: linear-gradient(to right, transparent, rgba(180,80,140,0.3));
+  }
+  .deco-top .l.r {
+    background: linear-gradient(to left, transparent, rgba(180,80,140,0.3));
+  }
+  .deco-top em {
+    font-style: normal; font-size: 8px; color: var(--muted); letter-spacing: 6px;
+  }
+
+  /* 이름 블록 */
+  .name-block { text-align: center; margin-bottom: 32px; }
+  .name-main {
+    font-size: 36px; font-weight: 700; color: var(--ink);
+    letter-spacing: 10px; line-height: 1; margin-bottom: 8px;
+  }
+  .name-ruby { font-size: 8px; color: var(--muted); letter-spacing: 6px; }
+
+  /* hr */
+  .hr {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(180,80,140,0.2), transparent);
+    margin: 20px 0;
+  }
+
+  /* ══════════════════════════
+     홀로그램 섹션 카드들
+  ══════════════════════════ */
+  .holo-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+
+  .holo-card {
+    border: 1px solid rgba(180,80,140,0.14);
+    background: rgba(22,8,30,0.7);
+    overflow: hidden;
+    position: relative;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .holo-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,60,120,0.25), transparent);
+  }
+
+  /* 섹션 헤더 — 클릭 가능 */
+  .holo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+  }
+
+  .holo-header:hover { background: rgba(255,40,100,0.04); }
+
+  .holo-label {
+    font-family: 'MS Gothic', monospace;
+    font-size: 8px; color: rgba(200,100,160,0.6);
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    text-shadow: 0 0 6px rgba(200,60,120,0.3);
+  }
+
+  .holo-arrow {
+    font-size: 8px; color: rgba(180,80,140,0.4);
+    transition: transform 0.3s;
+    font-family: 'MS Gothic', monospace;
+  }
+
+  .holo-card.open .holo-arrow { transform: rotate(90deg); }
+
+  /* 본문 — 접힘/펼침 */
+  .holo-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .holo-card.open .holo-body { max-height: 200px; }
+
+  .holo-inner {
+    padding: 4px 14px 14px;
+    border-top: 1px solid rgba(180,80,140,0.1);
+  }
+
+  /* 평범한 텍스트 */
+  .holo-normal {
+    font-size: 12px; color: rgba(200,170,200,0.65);
+    line-height: 2.3; letter-spacing: 0.8px; font-weight: 300;
+    margin-bottom: 10px;
+  }
+
+  /* 진심 텍스트 — 기본은 숨김 */
+  .holo-true {
+    font-size: 12px; color: rgba(255,130,160,0.0);
+    line-height: 2.3; letter-spacing: 0.8px; font-weight: 300;
+    border-top: 1px solid rgba(255,40,100,0.1);
+    padding-top: 8px;
+    transition: color 0.8s ease 0.3s;
+    position: relative;
+  }
+
+  /* 진심 보임 상태 */
+  .holo-card.revealed .holo-true {
+    color: rgba(255,130,160,0.82);
+  }
+
+  .holo-true .red {
+    color: rgba(255,32,96,0);
+    transition: color 0.8s ease 0.5s;
+    text-shadow: none;
+  }
+  .holo-card.revealed .holo-true .red {
+    color: var(--red);
+    text-shadow: 0 0 8px rgba(255,30,80,0.3);
+  }
+
+  /* 노이즈 가림막 — 진심 위에 올라가는 글리치 */
+  .holo-true::before {
+    content: attr(data-glitch);
+    position: absolute;
+    top: 8px; left: 0;
+    font-family: 'MS Gothic', monospace;
+    font-size: 9px; color: rgba(255,40,100,0.18);
+    letter-spacing: 3px; line-height: 2.3;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.4s;
+    white-space: pre-line;
+  }
+  .holo-card.revealed .holo-true::before { opacity: 0; }
+
+  /* ══════════════════════════
+     녹음 파일 UI
+  ══════════════════════════ */
+  .rec-panel {
+    border: 1px solid rgba(180,80,140,0.14);
+    background: rgba(16,4,22,0.85);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .rec-panel::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,40,100,0.3), transparent);
+  }
+
+  /* 상단 바 */
+  .rec-bar {
+    background: rgba(30,6,40,0.9);
+    border-bottom: 1px solid rgba(180,80,140,0.15);
+    padding: 8px 14px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .rec-bar-label {
+    font-family: 'MS Gothic', monospace; font-size: 8px;
+    color: rgba(200,100,160,0.5); letter-spacing: 4px;
+  }
+
+  .rec-bar-dots { display: flex; gap: 4px; }
+  .rec-bar-dots i {
+    display: block; width: 6px; height: 6px;
+    border-radius: 50%; font-style: normal;
+  }
+  .rd1 { background: rgba(255,40,100,0.7); box-shadow: 0 0 4px rgba(255,40,100,0.4); }
+  .rd2 { background: rgba(200,80,140,0.4); }
+  .rd3 { background: rgba(140,60,120,0.3); }
+
+  /* 트랙 목록 */
+  .rec-tracks {
+    padding: 10px 10px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  .rec-track {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 10px;
+    border: 1px solid rgba(180,80,140,0.1);
+    background: rgba(30,10,40,0.5);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rec-track:hover { border-color: rgba(200,60,120,0.25); background: rgba(40,10,50,0.6); }
+  .rec-track.playing { border-color: rgba(255,40,100,0.35); background: rgba(50,8,30,0.7); }
+
+  .rec-track-num {
+    font-family: 'MS Gothic', monospace; font-size: 8px;
+    color: rgba(180,80,140,0.4); letter-spacing: 1px;
+    width: 20px; flex-shrink: 0; text-align: center;
+  }
+
+  .rec-play-btn {
+    width: 22px; height: 22px; flex-shrink: 0;
+    border: 1px solid rgba(180,80,140,0.25);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 7px; color: rgba(180,80,140,0.6);
+    transition: all 0.2s;
+  }
+
+  .rec-track.playing .rec-play-btn {
+    border-color: rgba(255,40,100,0.5);
+    color: var(--red);
+    box-shadow: 0 0 8px rgba(255,40,100,0.2);
+    animation: playerpulse 1s ease-in-out infinite;
+  }
+
+  @keyframes playerpulse {
+    0%,100% { box-shadow: 0 0 6px rgba(255,40,100,0.2); }
+    50%     { box-shadow: 0 0 14px rgba(255,40,100,0.45); }
+  }
+
+  .rec-info { flex: 1; min-width: 0; }
+
+  .rec-title {
+    font-size: 9px; color: rgba(200,160,190,0.6);
+    letter-spacing: 3px; font-family: 'MS Gothic', monospace;
+    margin-bottom: 2px;
+  }
+
+  .rec-track.playing .rec-title { color: rgba(255,120,160,0.75); }
+
+  .rec-duration {
+    font-family: 'MS Gothic', monospace; font-size: 7px;
+    color: rgba(140,80,120,0.35); letter-spacing: 2px;
+  }
+
+  /* 파형 */
+  .rec-wave {
+    display: flex; align-items: center; gap: 2px; height: 16px; flex-shrink: 0;
+  }
+
+  .rec-wave span {
+    display: block; width: 2px;
+    background: rgba(180,80,140,0.2);
+    border-radius: 1px;
+    transition: background 0.3s;
+  }
+
+  .rec-track.playing .rec-wave span {
+    background: rgba(255,60,120,0.5);
+    animation: wavebar 0.6s ease-in-out infinite alternate;
+  }
+
+  .rec-track.playing .rec-wave span:nth-child(2) { animation-delay: 0.1s; }
+  .rec-track.playing .rec-wave span:nth-child(3) { animation-delay: 0.2s; }
+  .rec-track.playing .rec-wave span:nth-child(4) { animation-delay: 0.15s; }
+  .rec-track.playing .rec-wave span:nth-child(5) { animation-delay: 0.05s; }
+
+  @keyframes wavebar {
+    from { transform: scaleY(0.3); }
+    to   { transform: scaleY(1.0); }
+  }
+
+  .rec-wave span:nth-child(1) { height: 6px; }
+  .rec-wave span:nth-child(2) { height: 12px; }
+  .rec-wave span:nth-child(3) { height: 16px; }
+  .rec-wave span:nth-child(4) { height: 10px; }
+  .rec-wave span:nth-child(5) { height: 7px; }
+
+  /* 재생 중 텍스트 표시 영역 */
+  .rec-display {
+    min-height: 0; max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    border-top: none;
+  }
+
+  .rec-display.active {
+    max-height: 300px;
+    border-top: 1px solid rgba(180,80,140,0.1);
+    padding: 14px 14px 16px;
+  }
+
+  /* 타이핑 텍스트 */
+  .rec-typing {
+    font-size: 12px; color: rgba(200,170,200,0.7);
+    line-height: 2.3; letter-spacing: 0.8px; font-weight: 300;
+    min-height: 2.3em;
+  }
+
+  .rec-typing.true-mode {
+    color: rgba(255,130,160,0.8);
+  }
+
+  .rec-typing .red {
+    color: var(--red);
+    text-shadow: 0 0 8px rgba(255,30,80,0.3);
+  }
+
+  /* 커서 */
+  .cursor {
+    display: inline-block; width: 1px; height: 1em;
+    background: rgba(255,60,120,0.7);
+    margin-left: 1px;
+    animation: cursorblink 0.8s step-end infinite;
+    vertical-align: text-bottom;
+  }
+
+  @keyframes cursorblink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* 재생 상태 표시 */
+  .rec-status {
+    display: flex; align-items: center; gap: 6px;
+    padding: 0 14px 10px;
+    font-family: 'MS Gothic', monospace; font-size: 8px;
+    color: rgba(140,80,120,0.4); letter-spacing: 3px;
+    opacity: 0; transition: opacity 0.3s;
+  }
+
+  .rec-status.active { opacity: 1; }
+
+  .rec-status-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 6px rgba(255,40,100,0.6);
+    animation: recdot 1s ease-in-out infinite;
+  }
+
+  @keyframes recdot { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* 하단 서명 */
+  .footer-sig {
+    text-align: center; margin-top: 24px;
+    font-size: 8px; color: rgba(120,70,100,0.3);
+    letter-spacing: 6px;
+  }
+</style>
+</head>
+<body>
+
+<!-- 꽃잎 -->
+<div class="petal" style="left:8%;  animation-duration:8s;  animation-delay:0s;">✿</div>
+<div class="petal" style="left:22%; animation-duration:6.5s;animation-delay:1.2s;">✾</div>
+<div class="petal" style="left:45%; animation-duration:9s;  animation-delay:0.5s;">✽</div>
+<div class="petal" style="left:68%; animation-duration:7.5s;animation-delay:2s;">✿</div>
+<div class="petal" style="left:85%; animation-duration:8.5s;animation-delay:0.8s;">✾</div>
+
+<div class="container">
+
+  <!-- 상단 장식 -->
+  <div class="deco-top">
+    <div class="l"></div><em>自己紹介</em><div class="l r"></div>
+  </div>
+
+  <!-- 이름 -->
+  <div class="name-block">
+    <div class="name-main">無量鈴 鈴蘭</div>
+    <div class="name-ruby">む り ょ う す ず &nbsp;·&nbsp; す ず か</div>
+  </div>
+
+  <div class="hr"></div>
+
+  <!-- ── 홀로그램 섹션 카드 ── -->
+  <div class="holo-sections">
+
+    <!-- GREETING -->
+    <div class="holo-card" id="card-greeting">
+      <div class="holo-header" onclick="toggleCard('greeting')">
+        <span class="holo-label">GREETING</span>
+        <span class="holo-arrow">▶</span>
+      </div>
+      <div class="holo-body">
+        <div class="holo-inner">
+          <div class="holo-normal">안녕하세요, 무료스즈 스즈카라고 한답니다.<br>잘 부탁드려요, 정말로요. 반가워요.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AFFILIATION -->
+    <div class="holo-card" id="card-affiliation">
+      <div class="holo-header" onclick="toggleCard('affiliation')">
+        <span class="holo-label">AFFILIATION</span>
+        <span class="holo-arrow">▶</span>
+      </div>
+      <div class="holo-body">
+        <div class="holo-inner">
+          <div class="holo-normal">아지사이 대학 소속이에요. 제미(ゼミ)에서 여러 분들과<br>함께 공부하고 있어요. 스미노 키요코 교수님 지도 아래에서요.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATUS -->
+    <div class="holo-card" id="card-status">
+      <div class="holo-header" onclick="toggleCard('status')">
+        <span class="holo-label">STATUS</span>
+        <span class="holo-arrow">▶</span>
+      </div>
+      <div class="holo-body">
+        <div class="holo-inner">
+          <div class="holo-normal">집안이 귀족 작위를 받은 덕에 준남작 가문 출신이 됐어요.<br>거창하게 생각 안 하셔도 괜찮아요. 그냥 저예요.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERSONALITY -->
+    <div class="holo-card" id="card-personality">
+      <div class="holo-header" onclick="toggleCard('personality')">
+        <span class="holo-label">PERSONALITY</span>
+        <span class="holo-arrow">▶</span>
+      </div>
+      <div class="holo-body">
+        <div class="holo-inner">
+          <div class="holo-normal">조용하고 상냥한 편이라는 말을 많이 들어요.<br>사람들이랑 부딪히는 걸 싫어하고, 되도록 모두가 편했으면 해요.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTERESTS -->
+    <div class="holo-card" id="card-interests">
+      <div class="holo-header" onclick="toggleCard('interests')">
+        <span class="holo-label">INTERESTS</span>
+        <span class="holo-arrow">▶</span>
+      </div>
+      <div class="holo-body">
+        <div class="holo-inner">
+          <div class="holo-normal">읽고 싶은 책이 항상 쌓여 있어요. 조용한 카페에서 혼자 시간 보내는 걸 좋아하고,<br>꽃을 좋아해요. 은방울꽃의 꽃말처럼 조용한 것들이요.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MESSAGE -->
+    <div class="holo-card" id="card-message">
+      <div class="holo-header" onclick="toggleCard('message')">
+        <span class="holo-label">MESSAGE</span>
+        <span class="holo-arrow">▶</span>
+      </div>
+      <div class="holo-body">
+        <div class="holo-inner">
+          <div class="holo-normal">잘 부탁드려요. 무슨 일이 있으면 언제든지 말씀해 주세요.<br>저, 진심으로 도움이 되고 싶답니다.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="hr"></div>
+
+  <!-- ── 녹음 파일 UI ── -->
+  <div class="rec-panel">
+    <div class="rec-bar">
+      <span class="rec-bar-label">VOICE · REC · 無量鈴 鈴蘭</span>
+      <div class="rec-bar-dots">
+        <i class="rd1"></i><i class="rd2"></i><i class="rd3"></i>
+      </div>
+      <span class="rec-bar-label" id="recClock">22:14</span>
+    </div>
+
+    <div class="rec-tracks">
+
+      <div class="rec-track" id="track-0" onclick="playTrack(0)">
+        <span class="rec-track-num">01</span>
+        <div class="rec-play-btn">▶</div>
+        <div class="rec-info">
+          <div class="rec-title">GREETING</div>
+          <div class="rec-duration">00:12</div>
+        </div>
+        <div class="rec-wave">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <div class="rec-track" id="track-1" onclick="playTrack(1)">
+        <span class="rec-track-num">02</span>
+        <div class="rec-play-btn">▶</div>
+        <div class="rec-info">
+          <div class="rec-title">AFFILIATION</div>
+          <div class="rec-duration">00:18</div>
+        </div>
+        <div class="rec-wave">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <div class="rec-track" id="track-2" onclick="playTrack(2)">
+        <span class="rec-track-num">03</span>
+        <div class="rec-play-btn">▶</div>
+        <div class="rec-info">
+          <div class="rec-title">STATUS</div>
+          <div class="rec-duration">00:15</div>
+        </div>
+        <div class="rec-wave">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <div class="rec-track" id="track-3" onclick="playTrack(3)">
+        <span class="rec-track-num">04</span>
+        <div class="rec-play-btn">▶</div>
+        <div class="rec-info">
+          <div class="rec-title">PERSONALITY</div>
+          <div class="rec-duration">00:14</div>
+        </div>
+        <div class="rec-wave">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <div class="rec-track" id="track-4" onclick="playTrack(4)">
+        <span class="rec-track-num">05</span>
+        <div class="rec-play-btn">▶</div>
+        <div class="rec-info">
+          <div class="rec-title">INTERESTS</div>
+          <div class="rec-duration">00:16</div>
+        </div>
+        <div class="rec-wave">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <div class="rec-track" id="track-5" onclick="playTrack(5)">
+        <span class="rec-track-num">06</span>
+        <div class="rec-play-btn">▶</div>
+        <div class="rec-info">
+          <div class="rec-title">MESSAGE</div>
+          <div class="rec-duration">00:13</div>
+        </div>
+        <div class="rec-wave">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 재생 상태 -->
+    <div class="rec-status" id="recStatus">
+      <div class="rec-status-dot"></div>
+      <span id="recStatusLabel">재생 중</span>
+    </div>
+
+    <!-- 타이핑 디스플레이 -->
+    <div class="rec-display" id="recDisplay">
+      <div class="rec-typing" id="recTyping"><span class="cursor"></span></div>
+    </div>
+
+  </div>
+
+  <div class="footer-sig">無量鈴 鈴蘭 · 自己紹介</div>
+
+</div>
+
+<script>
+  // ── 홀로그램 카드 토글 ──
+  const openCards = new Set();
+
+  function toggleCard(id) {
+    const card = document.getElementById('card-' + id);
+    const isOpen = card.classList.contains('open');
+
+    if (isOpen) {
+      card.classList.remove('open', 'revealed');
+      openCards.delete(id);
+    } else {
+      card.classList.add('open');
+      openCards.add(id);
+      // 1.2초 후 진심 텍스트 글리치 해제
+      setTimeout(() => {
+        if (card.classList.contains('open')) {
+          card.classList.add('revealed');
+        }
+      }, 1200);
+    }
+  }
+
+  // ── 녹음 트랙 데이터 ──
+  const tracks = [
+    {
+      normal: '안녕하세요, 무료스즈 스즈카라고 한답니다.\n잘 부탁드려요, 정말로요. 반가워요.',
+      true:   '처음 뵙겠습니다.\n하지만… {red}저는 이미 당신을 알고 있어요.{/red}'
+    },
+    {
+      normal: '아지사이 대학 소속이에요. 제미(ゼミ)에서\n여러 분들과 함께 공부하고 있어요.\n스미노 키요코 교수님 지도 아래에서요.',
+      true:   '아지사이 대학 소속이에요.\n{red}당신과 같은 곳에 있을 수 있어서… 정말 다행이에요.{/red}\n우연이 아니었지만, 그게 무슨 상관이에요.'
+    },
+    {
+      normal: '집안이 귀족 작위를 받은 덕에 준남작 가문 출신이 됐어요.\n거창하게 생각 안 하셔도 괜찮아요. 그냥 저예요.',
+      true:   '준남작 가문 출신이에요.\n{red}이 정도면 당신 곁에 서도 부끄럽지 않겠죠.{/red}\n저는 당신이 원하는 무엇이든 될 수 있어요.'
+    },
+    {
+      normal: '조용하고 상냥한 편이라는 말을 많이 들어요.\n사람들이랑 부딪히는 걸 싫어하고,\n되도록 모두가 편했으면 해요.',
+      true:   '조용하고 {red}집요해요.{/red}\n한번 마음에 둔 건 절대 놓지 않아요.\n{red}지금 마음에 둔 건, 당신이에요.{/red}'
+    },
+    {
+      normal: '읽고 싶은 책이 항상 쌓여 있어요.\n조용한 카페에서 혼자 시간 보내는 걸 좋아하고,\n꽃을 좋아해요. 은방울꽃의 꽃말처럼 조용한 것들이요.',
+      true:   '당신이 어디에 있는지 파악하는 것.\n당신이 누구와 있는지 아는 것.\n{red}그게 요즘 제 유일한 관심사예요.{/red}'
+    },
+    {
+      normal: '잘 부탁드려요. 무슨 일이 있으면 언제든지 말씀해 주세요.\n저, 진심으로 도움이 되고 싶답니다.',
+      true:   '도망가지 마세요.\n{red}U님… 저는 이미 당신 없이는 안 돼요.{/red}\n피해자인 척은 이제 그만해도 될 것 같네요.'
+    }
+  ];
+
+  let currentTrack = -1;
+  let typingTimer = null;
+  let phase = 'idle'; // idle | typing-normal | pause | typing-true | done
+
+  const display   = document.getElementById('recDisplay');
+  const typingEl  = document.getElementById('recTyping');
+  const statusEl  = document.getElementById('recStatus');
+  const statusLbl = document.getElementById('recStatusLabel');
+
+  function clearTyping() {
+    clearTimeout(typingTimer);
+    typingEl.innerHTML = '<span class="cursor"></span>';
+    typingEl.className = 'rec-typing';
+    phase = 'idle';
+  }
+
+  function parseText(raw) {
+    // {red}...{/red} → <span class="red">...</span>
+    return raw.replace(/\{red\}([\s\S]*?)\{\/red\}/g, '<span class="red">$1</span>');
+  }
+
+  function typeText(text, el, speed, onDone) {
+    // text는 이미 HTML 포함 가능 → 순수 문자 단위로 타이핑
+    // HTML 태그는 한번에 삽입
+    const parsed = parseText(text);
+    // 타이핑용: HTML을 분해해서 문자 단위로
+    const tokens = tokenize(parsed);
+    let i = 0;
+    let built = '';
+
+    function next() {
+      if (i >= tokens.length) {
+        el.innerHTML = built + '<span class="cursor"></span>';
+        if (onDone) onDone();
+        return;
+      }
+      const tok = tokens[i++];
+      if (tok.type === 'tag') {
+        built += tok.value;
+      } else {
+        // 줄바꿈
+        if (tok.value === '\n') {
+          built += '<br>';
+        } else {
+          built += tok.value;
+        }
+        el.innerHTML = built + '<span class="cursor"></span>';
+      }
+      typingTimer = setTimeout(next, tok.type === 'tag' ? 0 : speed);
+    }
+
+    next();
+  }
+
+  function tokenize(html) {
+    const tokens = [];
+    let i = 0;
+    while (i < html.length) {
+      if (html[i] === '<') {
+        const end = html.indexOf('>', i);
+        tokens.push({ type: 'tag', value: html.slice(i, end + 1) });
+        i = end + 1;
+      } else {
+        tokens.push({ type: 'char', value: html[i] });
+        i++;
+      }
+    }
+    return tokens;
+  }
+
+  function playTrack(idx) {
+    // 같은 트랙 다시 클릭 → 정지
+    if (currentTrack === idx && phase !== 'idle') {
+      stopTrack();
+      return;
+    }
+
+    stopTrack(false);
+
+    currentTrack = idx;
+    const track = tracks[idx];
+
+    document.querySelectorAll('.rec-track').forEach(t => t.classList.remove('playing'));
+    document.getElementById('track-' + idx).classList.add('playing');
+
+    display.classList.add('active');
+    statusEl.classList.add('active');
+    statusLbl.textContent = '재생 중';
+    clearTyping();
+
+    // 글리치 잠깐 후 바로 진심 타이핑
+    phase = 'typing-true';
+    typingEl.className = 'rec-typing true-mode';
+    typingEl.innerHTML = '<span style="font-family:\'MS Gothic\',monospace;font-size:9px;color:rgba(255,40,100,0.3);letter-spacing:3px;">▓░▒▓░▒▓▒░▓▓░▒</span><span class="cursor"></span>';
+    statusLbl.textContent = '— — —';
+
+    typingTimer = setTimeout(() => {
+      clearTyping();
+      typingEl.className = 'rec-typing true-mode';
+      typeText(track.true, typingEl, 42, () => {
+        phase = 'done';
+        statusLbl.textContent = '완료';
+      });
+    }, 500);
+  }
+
+  function stopTrack(resetUI = true) {
+    clearTimeout(typingTimer);
+    phase = 'idle';
+    if (resetUI) {
+      currentTrack = -1;
+      document.querySelectorAll('.rec-track').forEach(t => t.classList.remove('playing'));
+      display.classList.remove('active');
+      statusEl.classList.remove('active');
+      clearTyping();
+    }
+  }
+
+  // 시계
+  function updateClock() {
+    const n = new Date();
+    document.getElementById('recClock').textContent =
+      String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
+  }
+  updateClock();
+  setInterval(updateClock, 30000);
+</script>
+
+</body>
+</html>
