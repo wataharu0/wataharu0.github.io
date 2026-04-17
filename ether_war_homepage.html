@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>エーテル戦記 - 公式ホームページ</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+JP:wght@400;700&display=swap');
+
+  :root {
+    --pink: #f9b8d4;
+    --lavender: #c9b8f9;
+    --purple: #9b8ec4;
+    --deep-purple: #6b5a9e;
+    --sky: #b8d4f9;
+    --mint: #b8f9e8;
+    --cream: #fff8fc;
+    --white: #ffffff;
+    --text-dark: #3d2b5e;
+    --text-mid: #6b5a9e;
+    --win-bg: #e8d5f0;
+    --win-border: #c9a8e0;
+    --win-title: linear-gradient(90deg, #9b8ec4, #c9b8f9, #f9b8d4);
+    --star-color: #e8d5ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: linear-gradient(180deg, #6b5a9e 0%, #9b8ec4 30%, #c9b8f9 60%, #f9c8e8 85%, #ffd8f0 100%);
+    min-height: 100vh;
+    font-family: 'DotGothic16', 'Noto Sans JP', monospace;
+    overflow-x: hidden;
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ccircle cx='4' cy='4' r='3' fill='%23f9b8d4' stroke='%239b8ec4' stroke-width='1'/%3E%3C/svg%3E") 4 4, auto;
+  }
+
+  /* 별 배경 */
+  .stars {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute;
+    background: var(--star-color);
+    border-radius: 50%;
+    animation: twinkle var(--dur, 3s) infinite var(--delay, 0s);
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+
+  /* 구름 */
+  .cloud-layer {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 100%; height: 200px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .cloud {
+    position: absolute;
+    background: rgba(220, 200, 255, 0.4);
+    border-radius: 50px;
+    filter: blur(15px);
+  }
+
+  /* 메인 컨테이너 */
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+  }
+
+  /* 윈도우 창 공통 */
+  .win {
+    background: var(--cream);
+    border: 2px solid var(--win-border);
+    border-top: 2px solid #e8c8f8;
+    border-left: 2px solid #e8c8f8;
+    border-bottom: 2px solid #a888c0;
+    border-right: 2px solid #a888c0;
+    margin-bottom: 16px;
+    box-shadow: 4px 4px 0 rgba(120, 80, 160, 0.25);
+    animation: fadeIn 0.4s ease both;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .win-title-bar {
+    background: linear-gradient(90deg, #9b8ec4, #c9b8f9, #f9b8d4);
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+  }
+
+  .win-title-text {
+    color: white;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-shadow: 1px 1px 0 rgba(100,60,140,0.5);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .win-title-text::before {
+    content: '✦';
+    font-size: 10px;
+  }
+
+  .win-btns {
+    display: flex;
+    gap: 3px;
+  }
+
+  .win-btn {
+    width: 14px; height: 14px;
+    border: 1px solid #a888c0;
+    background: var(--cream);
+    font-size: 8px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text-dark);
+    line-height: 1;
+  }
+
+  .win-btn:hover { background: var(--pink); }
+
+  .win-body { padding: 12px 16px; }
+
+  /* 헤더 타이틀 창 */
+  .header-win {
+    animation-delay: 0s;
+  }
+
+  .game-title {
+    text-align: center;
+    padding: 16px 0 8px;
+  }
+
+  .game-title h1 {
+    font-size: 28px;
+    color: var(--deep-purple);
+    letter-spacing: 0.2em;
+    text-shadow: 2px 2px 0 var(--pink), 4px 4px 0 rgba(155,142,196,0.3);
+    line-height: 1.3;
+  }
+
+  .game-title .subtitle {
+    font-size: 11px;
+    color: var(--purple);
+    letter-spacing: 0.3em;
+    margin-top: 4px;
+  }
+
+  .game-title .version-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--pink), var(--lavender));
+    color: white;
+    font-size: 10px;
+    padding: 2px 10px;
+    border: 1px solid var(--win-border);
+    margin-top: 8px;
+    letter-spacing: 0.1em;
+  }
+
+  /* 공지 / 뉴스 */
+  .news-item {
+    display: flex;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--win-border);
+    font-size: 12px;
+    align-items: flex-start;
+  }
+  .news-item:last-child { border-bottom: none; }
+  .news-date {
+    color: var(--purple);
+    min-width: 90px;
+    font-size: 11px;
+  }
+  .news-tag {
+    display: inline-block;
+    padding: 1px 6px;
+    font-size: 10px;
+    border: 1px solid;
+    min-width: 44px;
+    text-align: center;
+  }
+  .tag-new { color: #e060a0; border-color: #e060a0; background: #fff0f8; }
+  .tag-info { color: var(--deep-purple); border-color: var(--lavender); background: #f8f0ff; }
+  .tag-event { color: #6060c0; border-color: #c0b0e0; background: #f0f0ff; }
+  .news-text { color: var(--text-dark); flex: 1; line-height: 1.6; }
+  .news-text a { color: var(--deep-purple); text-decoration: underline; cursor: pointer; }
+
+  /* 게임 소개 */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .intro-box {
+    background: linear-gradient(135deg, rgba(201,184,249,0.2), rgba(249,184,212,0.2));
+    border: 1px solid var(--win-border);
+    padding: 10px 12px;
+  }
+
+  .intro-box h3 {
+    font-size: 11px;
+    color: var(--deep-purple);
+    letter-spacing: 0.15em;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--win-border);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .intro-box p, .intro-box li {
+    font-size: 11px;
+    color: var(--text-mid);
+    line-height: 1.8;
+    list-style: none;
+  }
+
+  .intro-box li::before { content: '◆ '; color: var(--pink); font-size: 9px; }
+
+  /* 직업 카드 */
+  .job-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .job-card {
+    background: linear-gradient(180deg, rgba(201,184,249,0.3), rgba(249,184,212,0.2));
+    border: 1px solid var(--win-border);
+    padding: 8px 6px;
+    text-align: center;
+    transition: transform 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+  }
+
+  .job-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(155,142,196,0.3);
+    background: linear-gradient(180deg, rgba(249,184,212,0.4), rgba(201,184,249,0.3));
+  }
+
+  .job-icon { font-size: 22px; margin-bottom: 4px; }
+  .job-name { font-size: 11px; color: var(--deep-purple); font-weight: bold; letter-spacing: 0.05em; }
+  .job-desc { font-size: 10px; color: var(--text-mid); margin-top: 2px; line-height: 1.4; }
+
+  /* 요금 안내 */
+  .price-box {
+    background: linear-gradient(135deg, rgba(184,212,249,0.3), rgba(184,249,232,0.2));
+    border: 1px solid var(--sky);
+    padding: 10px 14px;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .price-main {
+    font-size: 22px;
+    color: var(--deep-purple);
+    letter-spacing: 0.05em;
+  }
+
+  .price-main span {
+    font-size: 12px;
+    color: var(--text-mid);
+  }
+
+  .price-detail {
+    font-size: 11px;
+    color: var(--text-mid);
+    line-height: 1.8;
+  }
+
+  /* 시스템 요구사항 */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin-top: 4px;
+  }
+
+  .spec-table td {
+    padding: 5px 10px;
+    border: 1px solid var(--win-border);
+    color: var(--text-dark);
+    line-height: 1.6;
+  }
+
+  .spec-table td:first-child {
+    background: linear-gradient(135deg, rgba(201,184,249,0.3), rgba(249,184,212,0.2));
+    color: var(--deep-purple);
+    width: 35%;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+  }
+
+  /* 다운로드 버튼 */
+  .btn-area {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 8px 20px;
+    font-family: 'DotGothic16', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    transition: transform 0.1s;
+    border: none;
+    text-decoration: none;
+  }
+
+  .btn:active { transform: translate(1px, 1px); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--lavender), var(--pink));
+    color: white;
+    border: 2px solid white;
+    border-bottom: 2px solid var(--purple);
+    border-right: 2px solid var(--purple);
+    text-shadow: 1px 1px 0 rgba(100,60,140,0.4);
+    box-shadow: 2px 2px 0 var(--purple);
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--pink), var(--lavender));
+    box-shadow: 3px 3px 0 var(--purple);
+  }
+
+  .btn-secondary {
+    background: var(--cream);
+    color: var(--deep-purple);
+    border: 2px solid white;
+    border-bottom: 2px solid var(--win-border);
+    border-right: 2px solid var(--win-border);
+    box-shadow: 2px 2px 0 var(--win-border);
+  }
+
+  .btn-secondary:hover { background: rgba(201,184,249,0.2); }
+
+  /* 길드 랭킹 */
+  .ranking-list { margin-top: 4px; }
+
+  .rank-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    border-bottom: 1px dashed var(--win-border);
+    font-size: 11px;
+    transition: background 0.15s;
+  }
+
+  .rank-item:hover { background: rgba(201,184,249,0.15); }
+  .rank-item:last-child { border-bottom: none; }
+
+  .rank-num {
+    width: 22px; height: 22px;
+    background: linear-gradient(135deg, var(--lavender), var(--pink));
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    flex-shrink: 0;
+    text-shadow: 1px 1px 0 rgba(100,60,140,0.4);
+  }
+
+  .rank-num.gold { background: linear-gradient(135deg, #f9e8a0, #f0c840); color: #8a6000; }
+  .rank-num.silver { background: linear-gradient(135deg, #e0e0f0, #c0c0d8); color: #505068; }
+  .rank-num.bronze { background: linear-gradient(135deg, #f0c8a0, #d0a060); color: #6a3010; }
+
+  .rank-guild { color: var(--deep-purple); font-weight: bold; flex: 1; }
+  .rank-members { color: var(--text-mid); font-size: 10px; }
+  .rank-tag {
+    font-size: 9px;
+    padding: 1px 6px;
+    border: 1px solid;
+  }
+  .tag-pk { color: #c04060; border-color: #c04060; background: #fff0f4; }
+  .tag-social { color: #6060c0; border-color: #b0b0e0; background: #f0f0ff; }
+  .tag-battle { color: #8060a0; border-color: #c090d0; background: #f8f0ff; }
+
+  /* 플로팅 요소 */
+  .planet {
+    position: fixed;
+    top: 60px; left: 40px;
+    width: 60px; height: 60px;
+    pointer-events: none;
+    z-index: 0;
+    animation: floatPlanet 8s ease-in-out infinite;
+    opacity: 0.6;
+  }
+
+  @keyframes floatPlanet {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-12px) rotate(5deg); }
+  }
+
+  /* 섹션 레이블 */
+  .section-label {
+    font-size: 11px;
+    color: var(--purple);
+    letter-spacing: 0.2em;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--win-border), transparent);
+  }
+
+  /* 스크롤바 */
+  ::-webkit-scrollbar { width: 12px; }
+  ::-webkit-scrollbar-track { background: var(--cream); border: 1px solid var(--win-border); }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--lavender), var(--pink));
+    border: 1px solid var(--win-border);
+  }
+
+  /* 반짝이는 텍스트 */
+  .blink {
+    animation: blink 1.2s step-end infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* 애니메이션 딜레이 */
+  .win:nth-child(1) { animation-delay: 0s; }
+  .win:nth-child(2) { animation-delay: 0.1s; }
+  .win:nth-child(3) { animation-delay: 0.2s; }
+  .win:nth-child(4) { animation-delay: 0.3s; }
+  .win:nth-child(5) { animation-delay: 0.4s; }
+  .win:nth-child(6) { animation-delay: 0.5s; }
+  .win:nth-child(7) { animation-delay: 0.6s; }
+
+  /* 풋터 */
+  .footer-bar {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 100%;
+    background: linear-gradient(90deg, var(--lavender), var(--pink), var(--lavender));
+    border-top: 2px solid white;
+    padding: 3px 12px;
+    font-size: 10px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+    text-shadow: 1px 1px 0 rgba(100,60,140,0.4);
+  }
+
+  .footer-bar .clock {
+    font-family: 'DotGothic16', monospace;
+    letter-spacing: 0.1em;
+  }
+
+  /* 온라인 카운터 */
+  .online-counter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text-mid);
+    margin-top: 8px;
+    padding: 6px 10px;
+    background: rgba(201,184,249,0.15);
+    border: 1px dashed var(--win-border);
+  }
+  .online-dot {
+    width: 8px; height: 8px;
+    background: #60d060;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(96,208,96,0.4); }
+    50% { opacity: 0.8; box-shadow: 0 0 0 4px rgba(96,208,96,0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- 별 -->
+<div class="stars" id="stars"></div>
+
+<!-- 구름 -->
+<div class="cloud-layer">
+  <div class="cloud" style="width:300px;height:80px;bottom:20px;left:-30px;opacity:0.5;"></div>
+  <div class="cloud" style="width:200px;height:60px;bottom:40px;left:200px;opacity:0.4;"></div>
+  <div class="cloud" style="width:250px;height:70px;bottom:10px;right:0;opacity:0.45;"></div>
+  <div class="cloud" style="width:180px;height:50px;bottom:60px;right:150px;opacity:0.35;"></div>
+</div>
+
+<!-- 행성 -->
+<svg class="planet" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="30" cy="30" rx="16" ry="16" fill="rgba(180,160,230,0.7)" stroke="rgba(200,180,255,0.8)" stroke-width="1"/>
+  <ellipse cx="30" cy="30" rx="28" ry="8" fill="none" stroke="rgba(220,190,255,0.6)" stroke-width="2"/>
+  <circle cx="25" cy="26" r="3" fill="rgba(255,220,240,0.4)"/>
+</svg>
+
+<div class="container">
+
+  <!-- 타이틀 창 -->
+  <div class="win header-win">
+    <div class="win-title-bar">
+      <div class="win-title-text">エーテル戦記 — 公式ホームページ</div>
+      <div class="win-btns">
+        <div class="win-btn">_</div>
+        <div class="win-btn">□</div>
+        <div class="win-btn">×</div>
+      </div>
+    </div>
+    <div class="win-body">
+      <div class="game-title">
+        <h1>⚔ エーテル戦記 ⚔</h1>
+        <div class="subtitle">— ETHER WAR ONLINE —</div>
+        <div class="version-badge">✦ Ver 1.4.2 稼働中 ✦</div>
+      </div>
+      <div class="online-counter">
+        <div class="online-dot"></div>
+        <span>現在のオンラインプレイヤー：</span>
+        <strong style="color:var(--deep-purple)">3,842</strong>
+        <span style="margin-left:auto;font-size:10px;">接続方法：ダイヤルアップ / 月額1,400円</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 공지 -->
+  <div class="win">
+    <div class="win-title-bar">
+      <div class="win-title-text">お知らせ / NEWS</div>
+      <div class="win-btns">
+        <div class="win-btn">_</div>
+        <div class="win-btn">□</div>
+        <div class="win-btn">×</div>
+      </div>
+    </div>
+    <div class="win-body">
+      <div class="section-label">最新情報</div>
+      <div class="news-item">
+        <span class="news-date">1999.10.15</span>
+        <span class="news-tag tag-new">NEW</span>
+        <span class="news-text">コスチュームスロットに新アイテム「星降るローブ」「月光の鎧」追加。カップル衣装「星結び」も同時実装！</span>
+      </div>
+      <div class="news-item">
+        <span class="news-date">1999.10.10</span>
+        <span class="news-tag tag-event">EVENT</span>
+        <span class="news-text">ハウジングシステム大型アップデート。家具の種類が3倍に。ペット同伴入居も可能になりました。</span>
+      </div>
+      <div class="news-item">
+        <span class="news-date">1999.10.03</span>
+        <span class="news-tag tag-info">INFO</span>
+        <span class="news-text">深夜帯（AM2:00〜5:00）のサーバー混雑が解消されました。快適なプレイをお楽しみください。</span>
+      </div>
+      <div class="news-item">
+        <span class="news-date">1999.09.28</span>
+        <span class="news-tag tag-event">EVENT</span>
+        <span class="news-text"><a>公城戦システム実装</a>。毎週土曜22:00より開催。上位ギルドによる熾烈な争いが始まります！</span>
+      </div>
+      <div class="news-item">
+        <span class="news-date">1999.09.20</span>
+        <span class="news-tag tag-info">INFO</span>
+        <span class="news-text">PK警告：初心者フィールドへの高レベル侵入が多発。運営は監視を強化しています。</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 게임 소개 -->
+  <div class="win">
+    <div class="win-title-bar">
+      <div class="win-title-text">ゲーム紹介 / ABOUT</div>
+      <div class="win-btns">
+        <div class="win-btn">_</div>
+        <div class="win-btn">□</div>
+        <div class="win-btn">×</div>
+      </div>
+    </div>
+    <div class="win-body">
+      <div class="section-label">ゲームシステム</div>
+      <div class="intro-grid">
+        <div class="intro-box">
+          <h3>⚔ 戦闘システム</h3>
+          <ul>
+            <li>PK（プレイヤーキル）システム搭載</li>
+            <li>死亡時：装備ドロップ・LV1〜2ダウン</li>
+            <li>初心者ゾーンにも高レベル侵入あり</li>
+            <li>公城戦・ギルド戦システム</li>
+            <li>レベル差による保護機能なし</li>
+          </ul>
+        </div>
+        <div class="intro-box">
+          <h3>🏠 生活システム</h3>
+          <ul>
+            <li>ハウジング：部屋カスタマイズ可能</li>
+            <li>コスチュームスロット（スタット無影響）</li>
+            <li>カップル衣装：ペア着用でエフェクト発動</li>
+            <li>広場でカップル自慢も日常風景</li>
+            <li>女性プレイヤーに人気の着せ替え機能</li>
+          </ul>
+        </div>
+        <div class="intro-box">
+          <h3>🗺️ フィールド構成</h3>
+          <ul>
+            <li>草原地帯（初心者推奨）</li>
+            <li>廃墟地帯（Lv15〜30）</li>
+            <li>エーテルの森（Lv30〜50）</li>
+            <li>深夜2〜5時がゴールデンタイム</li>
+          </ul>
+        </div>
+        <div class="intro-box">
+          <h3>👥 ギルドシステム</h3>
+          <ul>
+            <li>自由なギルド結成・加入</li>
+            <li>ギルド専用チャット・拠点</li>
+            <li>少人数・テーマ型ギルドも活発</li>
+            <li>公城戦参加権取得でランキング上位へ</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 직업 -->
+  <div class="win">
+    <div class="win-title-bar">
+      <div class="win-title-text">職業紹介 / JOBS</div>
+      <div class="win-btns">
+        <div class="win-btn">_</div>
+        <div class="win-btn">□</div>
+        <div class="win-btn">×</div>
+      </div>
+    </div>
+    <div class="win-body">
+      <div class="section-label">選べる5つの職業</div>
+      <div class="job-grid">
+        <div class="job-card">
+          <div class="job-icon">⚔️</div>
+          <div class="job-name">戦士</div>
+          <div class="job-desc">高HP・近接攻撃。初心者にもおすすめの基本職</div>
+        </div>
+        <div class="job-card">
+          <div class="job-icon">🗡️</div>
+          <div class="job-name">盗賊</div>
+          <div class="job-desc">高速・奇襲特化。PK向きのトリッキーな職</div>
+        </div>
+        <div class="job-card">
+          <div class="job-icon">🔮</div>
+          <div class="job-name">魔法使い</div>
+          <div class="job-desc">高火力呪文。HPは低め。範囲攻撃が強力</div>
+        </div>
+        <div class="job-card">
+          <div class="job-icon">✨</div>
+          <div class="job-name">聖職者</div>
+          <div class="job-desc">回復・支援。PT戦闘の要。需要常に高し</div>
+        </div>
+        <div class="job-card">
+          <div class="job-icon">🏹</div>
+          <div class="job-name">弓使い</div>
+          <div class="job-desc">遠距離攻撃。地形を活かした戦術が光る</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 길드 랭킹 -->
+  <div class="win">
+    <div class="win-title-bar">
+      <div class="win-title-text">ギルドランキング / GUILD RANK</div>
+      <div class="win-btns">
+        <div class="win-btn">_</div>
+        <div class="win-btn">□</div>
+        <div class="win-btn">×</div>
+      </div>
+    </div>
+    <div class="win-body">
+      <div class="section-label">今週の公城戦ランキング</div>
+      <div class="ranking-list">
+        <div class="rank-item">
+          <div class="rank-num gold">1</div>
+          <div class="rank-guild">月華 <span style="font-size:9px;color:var(--text-mid)">〔Moonflower〕</span></div>
+          <span class="rank-tag tag-battle">攻城</span>
+          <span class="rank-members">メンバー：287名</span>
+        </div>
+        <div class="rank-item">
+          <div class="rank-num silver">2</div>
+          <div class="rank-guild">赤月 <span style="font-size:9px;color:var(--text-mid)">〔Red Moon〕</span></div>
+          <span class="rank-tag tag-pk">PK</span>
+          <span class="rank-members">メンバー：134名</span>
+        </div>
+        <div class="rank-item">
+          <div class="rank-num bronze">3</div>
+          <div class="rank-guild">銀翼 <span style="font-size:9px;color:var(--text-mid)">〔Silver Wing〕</span></div>
+          <span class="rank-tag tag-battle">攻城</span>
+          <span class="rank-members">メンバー：198名</span>
+        </div>
+        <div class="rank-item">
+          <div class="rank-num">4</div>
+          <div class="rank-guild">星屑の宴 <span style="font-size:9px;color:var(--text-mid)">〔Stardust〕</span></div>
+          <span class="rank-tag tag-social">交流</span>
+          <span class="rank-members">メンバー：92名</span>
+        </div>
+        <div class="rank-item">
+          <div class="rank-num">5</div>
+          <div class="rank-guild">キラキラ女子会 <span style="font-size:9px;color:var(--text-mid)">〔Kirakira〕</span></div>
+          <span class="rank-tag tag-social">女子限定</span>
+          <span class="rank-members">メンバー：23名</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 요금 및 다운로드 -->
+  <div class="win">
+    <div class="win-title-bar">
+      <div class="win-title-text">ご利用案内 / INFO</div>
+      <div class="win-btns">
+        <div class="win-btn">_</div>
+        <div class="win-btn">□</div>
+        <div class="win-btn">×</div>
+      </div>
+    </div>
+    <div class="win-body">
+      <div class="section-label">料金・システム要件</div>
+      <div class="price-box">
+        <div>
+          <div style="font-size:11px;color:var(--text-mid);margin-bottom:2px;">月額料金</div>
+          <div class="price-main">¥1,400 <span>/ 月</span></div>
+        </div>
+        <div class="price-detail">
+          ◆ 接続方式：ダイヤルアップ接続（別途通話料）<br>
+          ◆ 無料体験版：7日間無料トライアル実施中<br>
+          ◆ 支払方法：郵便振替・銀行振込
+        </div>
+      </div>
+
+      <table class="spec-table" style="margin-top:10px;">
+        <tr><td>OS</td><td>Windows 95 / 98 / NT4.0</td></tr>
+        <tr><td>CPU</td><td>Pentium 166MHz 以上推奨</td></tr>
+        <tr><td>メモリ</td><td>32MB以上（64MB推奨）</td></tr>
+        <tr><td>HDD空き容量</td><td>500MB以上</td></tr>
+        <tr><td>通信環境</td><td>28.8kbps以上のモデム</td></tr>
+        <tr><td>注意事項</td><td>ダイヤルアップ中は電話が使えません。ご注意ください。</td></tr>
+      </table>
+
+      <div class="btn-area">
+        <button class="btn btn-primary">▶ 今すぐダウンロード</button>
+        <button class="btn btn-secondary">◆ 無料体験版を試す</button>
+        <button class="btn btn-secondary">✉ お問い合わせ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 저작권 -->
+  <div style="text-align:center;font-size:10px;color:rgba(255,255,255,0.6);padding:8px 0 60px;letter-spacing:0.15em;">
+    © 1998-1999 Ether War Online. All Rights Reserved.<br>
+    <span class="blink">★</span> 当サイトはNetscape Navigator 4.0以上で最適化されています <span class="blink">★</span>
+  </div>
+
+</div>
+
+<!-- 풋터 태스크바 -->
+<div class="footer-bar">
+  <div>✦ エーテル戦記 公式 ✦ サーバー：稼働中</div>
+  <div class="clock" id="clock">--:--:--</div>
+</div>
+
+<script>
+  // 별 생성
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 3 + 1;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      top:${Math.random()*100}%;
+      left:${Math.random()*100}%;
+      --dur:${2+Math.random()*4}s;
+      --delay:${Math.random()*4}s;
+      opacity:${0.2+Math.random()*0.8};
+    `;
+    starsEl.appendChild(s);
+  }
+
+  // 십자 별
+  for (let i = 0; i < 12; i++) {
+    const s = document.createElement('div');
+    s.style.cssText = `
+      position:absolute;
+      top:${Math.random()*100}%;
+      left:${Math.random()*100}%;
+      color:rgba(232,213,255,0.6);
+      font-size:${8+Math.random()*8}px;
+      animation:twinkle ${2+Math.random()*3}s infinite ${Math.random()*3}s;
+      pointer-events:none;
+    `;
+    s.textContent = '+';
+    starsEl.appendChild(s);
+  }
+
+  // 시계
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+</script>
+</body>
+</html>
