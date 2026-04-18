@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>彷徨う龍 — キスとゲーム</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+JP:wght@400;700&display=swap');
+
+  :root {
+    --pink: #f9b8d4;
+    --lavender: #c9b8f9;
+    --purple: #9b8ec4;
+    --deep-purple: #6b5a9e;
+    --sky: #b8d4f9;
+    --mint: #b8f9e8;
+    --cream: #fff8fc;
+    --white: #ffffff;
+    --text-dark: #3d2b5e;
+    --text-mid: #6b5a9e;
+    --win-bg: #e8d5f0;
+    --win-border: #c9a8e0;
+    --star-color: #e8d5ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: linear-gradient(180deg, #6b5a9e 0%, #9b8ec4 30%, #c9b8f9 60%, #f9c8e8 85%, #ffd8f0 100%);
+    min-height: 100vh;
+    font-family: 'DotGothic16', 'Noto Sans JP', monospace;
+    overflow-x: hidden;
+  }
+
+  /* 별 배경 */
+  .stars {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute;
+    background: var(--star-color);
+    border-radius: 50%;
+    animation: twinkle var(--dur, 3s) infinite var(--delay, 0s);
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+
+  /* 구름 */
+  .cloud-layer {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 100%; height: 200px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .cloud {
+    position: absolute;
+    background: rgba(220, 200, 255, 0.4);
+    border-radius: 50px;
+    filter: blur(15px);
+  }
+
+  .planet {
+    position: fixed;
+    top: 60px; left: 40px;
+    width: 60px; height: 60px;
+    pointer-events: none;
+    z-index: 0;
+    animation: floatPlanet 8s ease-in-out infinite;
+    opacity: 0.6;
+  }
+  @keyframes floatPlanet {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-12px) rotate(5deg); }
+  }
+
+  /* 메인 컨테이너 */
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+  }
+
+  /* 윈도우 창 공통 */
+  .win {
+    background: var(--cream);
+    border: 2px solid var(--win-border);
+    border-top: 2px solid #e8c8f8;
+    border-left: 2px solid #e8c8f8;
+    border-bottom: 2px solid #a888c0;
+    border-right: 2px solid #a888c0;
+    margin-bottom: 16px;
+    box-shadow: 4px 4px 0 rgba(120, 80, 160, 0.25);
+    animation: fadeIn 0.4s ease both;
+  }
+  .win:nth-child(1) { animation-delay: 0s; }
+  .win:nth-child(2) { animation-delay: 0.1s; }
+  .win:nth-child(3) { animation-delay: 0.2s; }
+  .win:nth-child(4) { animation-delay: 0.3s; }
+  .win:nth-child(5) { animation-delay: 0.4s; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .win-title-bar {
+    background: linear-gradient(90deg, #9b8ec4, #c9b8f9, #f9b8d4);
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+  }
+  .win-title-text {
+    color: white;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-shadow: 1px 1px 0 rgba(100,60,140,0.5);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .win-title-text::before { content: '✦'; font-size: 10px; }
+  .win-btns { display: flex; gap: 3px; }
+  .win-btn {
+    width: 14px; height: 14px;
+    border: 1px solid #a888c0;
+    background: var(--cream);
+    font-size: 8px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text-dark);
+  }
+  .win-btn:hover { background: var(--pink); }
+  .win-body { padding: 14px 18px; }
+
+  .section-label {
+    font-size: 11px;
+    color: var(--purple);
+    letter-spacing: 0.2em;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--win-border), transparent);
+  }
+
+  /* ===== 머리말 ===== */
+  .foreword-body {
+    font-size: 12px;
+    color: var(--text-dark);
+    line-height: 2.2;
+    letter-spacing: 0.05em;
+  }
+  .foreword-body p { margin-bottom: 10px; }
+  .foreword-title {
+    text-align: center;
+    margin-bottom: 18px;
+  }
+  .foreword-title .main-title {
+    font-size: 26px;
+    color: var(--deep-purple);
+    letter-spacing: 0.3em;
+    text-shadow: 2px 2px 0 var(--pink), 4px 4px 0 rgba(155,142,196,0.3);
+    line-height: 1.4;
+  }
+  .foreword-title .sub-title {
+    font-size: 13px;
+    color: var(--purple);
+    letter-spacing: 0.4em;
+    margin-top: 4px;
+  }
+  .foreword-title .waka-box {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 10px 20px;
+    border: 1px solid var(--win-border);
+    background: linear-gradient(135deg, rgba(201,184,249,0.2), rgba(249,184,212,0.15));
+    text-align: center;
+  }
+  .waka-line {
+    font-size: 13px;
+    color: var(--deep-purple);
+    letter-spacing: 0.25em;
+    line-height: 2;
+  }
+  .waka-title {
+    font-size: 10px;
+    color: var(--text-mid);
+    letter-spacing: 0.2em;
+    margin-bottom: 6px;
+  }
+
+  /* ===== 캐릭터 명함 ===== */
+  .char-card {
+    border: 1px solid var(--win-border);
+    padding: 16px;
+    background: linear-gradient(135deg, rgba(201,184,249,0.15), rgba(249,184,212,0.1));
+    transition: all 0.4s ease;
+  }
+
+  /* 아가씨 모드 명함 */
+  .char-card.ojousama-mode {
+    background: linear-gradient(135deg, rgba(255,240,250,0.9), rgba(240,235,255,0.85));
+    border: 1px solid #d4b0e8;
+  }
+
+  .card-inner {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+  }
+
+  /* 프로필 이미지 영역 */
+  .profile-img-box {
+    flex-shrink: 0;
+    width: 160px;
+  }
+  .profile-img {
+    width: 160px;
+    height: 253px;
+    border: 2px solid var(--win-border);
+    background: linear-gradient(135deg, rgba(201,184,249,0.3), rgba(249,184,212,0.2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--text-mid);
+    text-align: center;
+    letter-spacing: 0.05em;
+    line-height: 1.8;
+    overflow: hidden;
+    position: relative;
+  }
+  .profile-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+  .profile-img .placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--text-mid);
+    gap: 6px;
+  }
+
+  .ojousama-mode .profile-img {
+    border-color: #d4b0e8;
+    background: linear-gradient(135deg, rgba(255,235,250,0.6), rgba(235,225,255,0.5));
+  }
+
+  /* 모드 전환 버튼 */
+  .mode-btn-area {
+    margin-top: 8px;
+    text-align: center;
+  }
+  .mode-btn {
+    display: block;
+    width: 100%;
+    padding: 5px 0;
+    font-family: 'DotGothic16', monospace;
+    font-size: 10px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    border: none;
+    transition: all 0.2s;
+    background: linear-gradient(135deg, var(--lavender), var(--pink));
+    color: white;
+    border: 1px solid white;
+    border-bottom: 1px solid var(--purple);
+    border-right: 1px solid var(--purple);
+    box-shadow: 1px 1px 0 var(--purple);
+    text-shadow: 1px 1px 0 rgba(100,60,140,0.4);
+  }
+  .mode-btn:hover {
+    background: linear-gradient(135deg, var(--pink), var(--lavender));
+  }
+  .mode-btn:active { transform: translate(1px,1px); box-shadow: none; }
+
+  /* 명함 텍스트 */
+  .card-info { flex: 1; min-width: 0; }
+
+  .card-name-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+  }
+  .card-name {
+    font-size: 20px;
+    color: var(--deep-purple);
+    letter-spacing: 0.1em;
+    text-shadow: 1px 1px 0 rgba(201,184,249,0.5);
+  }
+  .card-name-ruby {
+    font-size: 11px;
+    color: var(--purple);
+    letter-spacing: 0.15em;
+  }
+  .card-name-en {
+    font-size: 10px;
+    color: var(--text-mid);
+    letter-spacing: 0.2em;
+  }
+
+  /* 귀족원 문서 스타일 */
+  .ojousama-mode .card-name {
+    font-size: 18px;
+    letter-spacing: 0.2em;
+    color: #5a3a7e;
+  }
+
+  .card-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--win-border), transparent);
+    margin: 8px 0;
+  }
+  .ojousama-mode .card-divider {
+    background: linear-gradient(90deg, #d4b0e8, #f0d8ff, transparent);
+  }
+
+  .card-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin-top: 2px;
+  }
+  .card-table td {
+    padding: 4px 6px;
+    vertical-align: top;
+    line-height: 1.7;
+    color: var(--text-dark);
+  }
+  .card-table td:first-child {
+    color: var(--purple);
+    white-space: nowrap;
+    width: 70px;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+  }
+  .card-table td:last-child { color: var(--text-dark); }
+
+  /* 귀족원 문서 테이블 */
+  .ojousama-mode .card-table td:first-child { color: #7a5a9e; }
+
+  /* 귀족원 문서 헤더 */
+  .noble-header {
+    display: none;
+    text-align: center;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #d4b0e8;
+    background: rgba(255,245,255,0.8);
+  }
+  .ojousama-mode .noble-header { display: block; }
+  .noble-header-title {
+    font-size: 11px;
+    color: #7a5a9e;
+    letter-spacing: 0.3em;
+  }
+  .noble-header-sub {
+    font-size: 10px;
+    color: #a888c0;
+    letter-spacing: 0.15em;
+    margin-top: 2px;
+  }
+
+  /* 일반 모드에서는 숨기는 요소 */
+  .ojousama-only { display: none; }
+  .ojousama-mode .ojousama-only { display: table-row; }
+  .normal-only { display: table-row; }
+  .ojousama-mode .normal-only { display: none; }
+
+  /* 성격 태그 */
+  .trait-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+  }
+  .trait-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border: 1px solid var(--win-border);
+    color: var(--text-mid);
+    background: rgba(201,184,249,0.15);
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== 장소 ===== */
+  .location-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .location-card {
+    border: 1px solid var(--win-border);
+    padding: 10px 12px;
+    background: linear-gradient(135deg, rgba(201,184,249,0.15), rgba(249,184,212,0.1));
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .location-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(155,142,196,0.2);
+  }
+
+  .location-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed var(--win-border);
+  }
+  .location-icon { font-size: 18px; }
+  .location-name {
+    font-size: 13px;
+    color: var(--deep-purple);
+    letter-spacing: 0.1em;
+    font-weight: bold;
+  }
+  .location-ruby {
+    font-size: 10px;
+    color: var(--text-mid);
+    letter-spacing: 0.1em;
+  }
+
+  .location-dist {
+    display: inline-block;
+    font-size: 9px;
+    padding: 1px 6px;
+    border: 1px solid var(--lavender);
+    color: var(--purple);
+    background: rgba(201,184,249,0.2);
+    margin-bottom: 5px;
+  }
+
+  .location-desc {
+    font-size: 11px;
+    color: var(--text-mid);
+    line-height: 1.8;
+  }
+  .location-note {
+    font-size: 10px;
+    color: var(--purple);
+    margin-top: 4px;
+    padding: 3px 6px;
+    border-left: 2px solid var(--pink);
+    background: rgba(249,184,212,0.1);
+    line-height: 1.6;
+  }
+
+  /* 풋터 */
+  .footer-bar {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 100%;
+    background: linear-gradient(90deg, var(--lavender), var(--pink), var(--lavender));
+    border-top: 2px solid white;
+    padding: 3px 12px;
+    font-size: 10px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+    text-shadow: 1px 1px 0 rgba(100,60,140,0.4);
+  }
+  .footer-bar .clock { font-family: 'DotGothic16', monospace; letter-spacing: 0.1em; }
+
+  .blink { animation: blink 1.2s step-end infinite; }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  ::-webkit-scrollbar { width: 12px; }
+  ::-webkit-scrollbar-track { background: var(--cream); border: 1px solid var(--win-border); }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--lavender), var(--pink));
+    border: 1px solid var(--win-border);
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="cloud-layer">
+  <div class="cloud" style="width:300px;height:80px;bottom:20px;left:-30px;opacity:0.5;"></div>
+  <div class="cloud" style="width:200px;height:60px;bottom:40px;left:200px;opacity:0.4;"></div>
+  <div class="cloud" style="width:250px;height:70px;bottom:10px;right:0;opacity:0.45;"></div>
+  <div class="cloud" style="width:180px;height:50px;bottom:60px;right:150px;opacity:0.35;"></div>
+</div>
+
+<svg class="planet" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="30" cy="30" rx="16" ry="16" fill="rgba(180,160,230,0.7)" stroke="rgba(200,180,255,0.8)" stroke-width="1"/>
+  <ellipse cx="30" cy="30" rx="28" ry="8" fill="none" stroke="rgba(220,190,255,0.6)" stroke-width="2"/>
+  <circle cx="25" cy="26" r="3" fill="rgba(255,220,240,0.4)"/>
+</svg>
+
+<div class="container">
+
+  <!-- ① 머리말 -->
+  <div class="win">
+    <div class="win-title-bar">
+      <div class="win-title-text">前書き / FOREWORD</div>
+      <div class="win-btns">
+        <div class="win-btn">_</div>
+        <div class="win-btn">□</div>
+        <div class="win-btn">×</div>
+      </div>
+    </div>
+    <div class="win-body">
+      <div class="foreword-title">
+        <div class="main-title">彷徨う龍</div>
+        <div class="sub-title">— キスとゲーム —</div>
+        <div class="waka-box">
+          <div class="waka-title">달걀의 노래</div>
+          <div class="waka-line">헤메는시간</div>
+          <div class="waka-line">필요하다말하고</div>
+          <div class="waka-line">아니라하면</div>
+          <div class="waka-line">덧없는시간되나</div>
+          <div class="waka-line">정하는것은자신</div>
+        </div>
+      </div>
+      <div class="foreword-body">
+        <p>1999년, 제도 도쿄.<br>
+        화족 제도는 아직 숨을 쉬고 있다. 다만 그 윤곽은 꽤 옅어졌다.</p>
+        <p>로쿠죠 공작가 분가에서 태어난 타츠코는 오늘도 방 구석에서 게임을 하고 있다.<br>
+        밖에 나가지 않는다. 사람을 만나지 않는다. 그냥 게임을 하고, 피자를 먹고, 날이 밝기를 기다린다.<br>
+        딱히 불만은 없다——아마도.</p>
+        <p>그곳에, 당신이 왔다.</p>
+        <p>타츠코가 당신에게 뭔가를 말할지도 모른다. 퉁명스러운 말을, 짓궂은 말을.<br>
+        하지만 그것만이 전부가 아니라는 걸, 당신은 언젠가 알게 될 것이다.<br>
+        ——알아채지 못할 수도 있지만.</p>
+        <p style="text-align:right;color:var(--purple);font-size:11px;letter-spacing:0.1em;">
+          ✦ 정하는 것은, 당신 ✦
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 등장인물 -->
+  <div class="win">
+    <div class="win-title-bar">
+      <div class="win-title-text">登場人物 / CHARACTERS</div>
+      <div class="win-btns">
+        <div class="win-btn">_</div>
+        <div class="win-btn">□</div>
+        <div class="win-btn">×</div>
+      </div>
+    </div>
+    <div class="win-body">
+      <div class="section-label">メインヒロイン</div>
+
+      <div class="char-card" id="tatsuko-card">
+        <div class="noble-header">
+          <div class="noble-header-title">◆ 帝國華族院 人物調書 ◆</div>
+          <div class="noble-header-sub">六条公爵家分家 / 令嬢紹介状</div>
+        </div>
+
+        <div class="card-inner">
+          <!-- 프로필 이미지 -->
+          <div class="profile-img-box">
+            <div class="profile-img" id="profile-img-box">
+              <img id="profile-img-normal" src="https://raw.githubusercontent.com/wataharu0/noir/main/JO1-1.webp" alt="龍子">
+              <img id="profile-img-ojousama" src="https://raw.githubusercontent.com/wataharu0/noir/main/JO4-5.webp" alt="龍子（令嬢）" style="display:none;">
+              <div class="placeholder" id="img-placeholder">
+                <span>🌸</span>
+                <span>프로필 이미지</span>
+              </div>
+            </div>
+            <div class="mode-btn-area">
+              <button class="mode-btn" id="mode-toggle-btn" onclick="toggleMode()">
+                ✦ 令嬢モードへ ✦
+              </button>
+            </div>
+          </div>
+
+          <!-- 명함 정보 -->
+          <div class="card-info">
+            <div class="card-name-row">
+              <div class="card-name" id="card-name">六条 龍子</div>
+              <div class="card-name-ruby" id="card-ruby">ろくじょう たつこ</div>
+            </div>
+            <div class="card-name-en" id="card-en">ROKUJOU TATSUKO</div>
+            <div class="card-divider"></div>
+
+            <table class="card-table">
+              <!-- 공통 -->
+              <tr>
+                <td>나이</td>
+                <td>22세</td>
+              </tr>
+              <tr>
+                <td>신분</td>
+                <td id="card-status">로쿠죠 공작가 분가의 영애</td>
+              </tr>
+              <tr>
+                <td>거주</td>
+                <td id="card-residence">자취 중 (역 근처 아파트)</td>
+              </tr>
+
+              <!-- 일반 모드 전용 -->
+              <tr class="normal-only">
+                <td>일상</td>
+                <td>방에 틀어박혀 게임 삼매경. 낮밤 역전 중.</td>
+              </tr>
+              <tr class="normal-only">
+                <td>취미</td>
+                <td>에테르 워 (MMORPG), 포포로 가든, 피자</td>
+              </tr>
+              <tr class="normal-only">
+                <td>성격</td>
+                <td>
+                  <div class="trait-tags">
+                    <span class="trait-tag">츤데레</span>
+                    <span class="trait-tag">수줍음쟁이</span>
+                    <span class="trait-tag">게임 중독</span>
+                    <span class="trait-tag">은밀한 외로움</span>
+                    <span class="trait-tag">솔직하지 못함</span>
+                  </div>
+                </td>
+              </tr>
+              <tr class="normal-only">
+                <td>말버릇</td>
+                <td>「뭐」「시끄러워」「…게임, 같이 안 할 거야?」</td>
+              </tr>
+
+              <!-- 아가씨 모드 전용 -->
+              <tr class="ojousama-only">
+                <td>가격</td>
+                <td>로쿠죠 공작가 분가. 유서 깊은 화족의 후예.</td>
+              </tr>
+              <tr class="ojousama-only">
+                <td>교양</td>
+                <td>다도·서도·프랑스어 회화. 제도 여자대학 재학.</td>
+              </tr>
+              <tr class="ojousama-only">
+                <td>기질</td>
+                <td>
+                  <div class="trait-tags">
+                    <span class="trait-tag">조용함</span>
+                    <span class="trait-tag">품위</span>
+                    <span class="trait-tag">사려 깊음</span>
+                    <span class="trait-tag">절제</span>
+                  </div>
+                </td>
+              </tr>
+              <tr class="ojousama-only">
+                <td>소감</td>
+                <td id="ojousama-comment">「…그런 말씀은 잘 모르겠습니다.」<br>「실례를 끼쳐드렸네요.」</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 조연 -->
+      <div class="section-label" style="margin-top:14px;">サブキャラクター</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+
+        <div style="border:1px solid var(--win-border);padding:10px 12px;background:linear-gradient(135deg,rgba(201,184,249,0.12),rgba(249,184,212,0.08));font-size:11px;">
+          <div style="font-size:13px;color:var(--deep-purple);letter-spacing:0.1em;font-weight:bold;margin-bottom:4px;">近衛 龍乃</div>
+          <div style="font-size:10px;color:var(--text-mid);letter-spacing:0.1em;margin-bottom:6px;">このえ たつの — 20歳</div>
+          <div style="height:1px;background:linear-gradient(90deg,var(--win-border),transparent);margin-bottom:6px;"></div>
+          <div style="color:var(--text-mid);line-height:1.8;">
+            타츠코의 친여동생. 코노에 가의 양녀로 입적.<br>
+            예의 바르고 온화하지만, 내면은 복잡하다.<br>
+            <span style="color:var(--purple);font-size:10px;">「걱정 마세요. 제대로 연락할게요.」</span>
+          </div>
+        </div>
+
+        <div style="border:1px solid var(--win-border);padding:10px 12px;background:linear-gradient(135deg,rgba(184,212,249,0.12),rgba(184,249,232,0.08));font-size:11px;">
+          <div style="font-size:13px;color:var(--deep-purple);letter-spacing:0.1em;font-weight:bold;margin-bottom:4px;">リリア</div>
+          <div style="font-size:10px;color:var(--text-mid);letter-spacing:0.1em;margin-bottom:6px;">キラキラ女子会 ギルド長 — ゲーム内</div>
+          <div style="height:1px;background:linear-gradient(90deg,var(--win-border),transparent);margin-bottom:6px;"></div>
+          <div style="color:var(--text-mid);line-height:1.8;">
+            에테르 워 내 캐릭터. 음유시인.<br>
+            교류 중심의 따뜻한 스타일. 타츠코의 길드 동료.<br>
+            <span style="color:var(--purple);font-size:10px;">「타츠코짱 남자친구? 넣어줄게~♪」</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 주요 장소 -->
+  <div class="win">
+    <div class="win-title-bar">
+      <div class="win-title-text">主要な場所 / LOCATIONS</div>
+      <div class="win-btns">
+        <div class="win-btn">_</div>
+        <div class="win-btn">□</div>
+        <div class="win-btn">×</div>
+      </div>
+    </div>
+    <div class="win-body">
+      <div class="section-label">제도 도쿄 — 주요 무대</div>
+      <div class="location-grid">
+
+        <div class="location-card">
+          <div class="location-header">
+            <div class="location-icon">🏠</div>
+            <div>
+              <div class="location-name">龍子の部屋</div>
+              <div class="location-ruby">기준점 / 역 근처</div>
+            </div>
+          </div>
+          <div class="location-dist">📍 거리 기준점</div>
+          <div class="location-desc">이야기의 중심. 항상 게임 소리가 난다. 피자 상자가 쌓여 있을 때도 있다. 커튼은 거의 닫혀 있다.</div>
+          <div class="location-note">🎮 에테르 워 다이얼업 접속은 여기서. 「전화하지 말라고 했잖아!!」</div>
+        </div>
+
+        <div class="location-card">
+          <div class="location-header">
+            <div class="location-icon">☕</div>
+            <div>
+              <div class="location-name">カフェ・モネ</div>
+              <div class="location-ruby">대학가 / 도보 10분</div>
+            </div>
+          </div>
+          <div class="location-dist">🚶 도보 10분</div>
+          <div class="location-desc">대학가의 조용한 카페. 창가 자리가 인기. 파르페 메뉴가 충실하다. 타츠코가 외출할 때 가끔 들른다.</div>
+          <div class="location-note">🍓 타츠코가 파르페를 주문하면 숨기는 것도 잊고 집중한다.</div>
+        </div>
+
+        <div class="location-card">
+          <div class="location-header">
+            <div class="location-icon">🎵</div>
+            <div>
+              <div class="location-name">Blue Note</div>
+              <div class="location-ruby">대학가 / 도보 20분</div>
+            </div>
+          </div>
+          <div class="location-dist">🚶 도보 20분 (골목 안쪽)</div>
+          <div class="location-desc">대학가 구석진 곳에 있는 재즈바. 조명이 어둡고 조용하다. 단골이 많다. 타츠코가 알고 있는 아지트 중 하나.</div>
+          <div class="location-note">🎷 밤늦은 속마음 대화에 어울리는 장소. 취하면 타츠코의 입이 가벼워진다.</div>
+        </div>
+
+        <div class="location-card">
+          <div class="location-header">
+            <div class="location-icon">⛩️</div>
+            <div>
+              <div class="location-name">二宮神社</div>
+              <div class="location-ruby">주택가 안쪽 / 도보 30분</div>
+            </div>
+          </div>
+          <div class="location-dist">🚶 도보 30분</div>
+          <div class="location-desc">조용한 신사. 나무가 많아 낮에도 어두침침하다. 타츠코가 혼자 멍하니 있으러 오는 장소. 인연의 신을 모시고 있다.</div>
+          <div class="location-note">🍃 에마에 뭔가를 쓴 적이 있다. 내용은 비밀. 돌계단은 비 온 뒤에 미끄럽다.</div>
+        </div>
+
+        <div class="location-card">
+          <div class="location-header">
+            <div class="location-icon">🛁</div>
+            <div>
+              <div class="location-name">にゃんにゃん湯</div>
+              <div class="location-ruby">타마 지구 / 전차 40분</div>
+            </div>
+          </div>
+          <div class="location-dist">🚃 전차 40분</div>
+          <div class="location-desc">고양이 도자기가 맞이해주는 온천 시설. 혼욕 노천탕 있음 (수영복 착용 필수). 타츠코가 기분 전환에 혼자 오는 곳. 돌아오는 전차도 40분.</div>
+          <div class="location-note">🐱 고양이 3마리 (유키·모모·쿠로)가 시설 내를 돌아다닌다. 타츠코는 딸기우유 고정.</div>
+        </div>
+
+        <div class="location-card">
+          <div class="location-header">
+            <div class="location-icon">🎮</div>
+            <div>
+              <div class="location-name">ゲームショップ</div>
+              <div class="location-ruby">도쿄 중심지 / 전차 40분</div>
+            </div>
+          </div>
+          <div class="location-dist">🚃 전차 40분</div>
+          <div class="location-desc">대형 게임샵 & 전자상가. 신작 소프트 발매일에는 이른 아침부터 줄을 서는 사람도 있다. 타츠코의 몇 안 되는 「외출하는 이유」 중 하나.</div>
+          <div class="location-note">🕹️ 신작을 혼자 사러 가는 게 습관. 누군가와 함께 오는 건 처음이 될지도.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 저작권 -->
+  <div style="text-align:center;font-size:10px;color:rgba(255,255,255,0.6);padding:8px 0 60px;letter-spacing:0.15em;">
+    彷徨う龍 — キスとゲーム<br>
+    <span class="blink">★</span> 1999년, 제도 도쿄 <span class="blink">★</span>
+  </div>
+
+</div>
+
+<div class="footer-bar">
+  <div>✦ 彷徨う龍 — キスとゲーム ✦</div>
+  <div class="clock" id="clock">--:--:--</div>
+</div>
+
+<script>
+  // 별 생성
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 3 + 1;
+    s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--dur:${2+Math.random()*4}s;--delay:${Math.random()*4}s;opacity:${0.2+Math.random()*0.8};`;
+    starsEl.appendChild(s);
+  }
+  for (let i = 0; i < 12; i++) {
+    const s = document.createElement('div');
+    s.style.cssText = `position:absolute;top:${Math.random()*100}%;left:${Math.random()*100}%;color:rgba(232,213,255,0.6);font-size:${8+Math.random()*8}px;animation:twinkle ${2+Math.random()*3}s infinite ${Math.random()*3}s;pointer-events:none;`;
+    s.textContent = '+';
+    starsEl.appendChild(s);
+  }
+
+  // 시계
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // 명함 모드 전환
+  let isOjousama = false;
+
+  function toggleMode() {
+    isOjousama = !isOjousama;
+    const card = document.getElementById('tatsuko-card');
+    const btn = document.getElementById('mode-toggle-btn');
+    const imgNormal = document.getElementById('profile-img-normal');
+    const imgOjousama = document.getElementById('profile-img-ojousama');
+    const placeholder = document.getElementById('img-placeholder');
+
+    if (isOjousama) {
+      card.classList.add('ojousama-mode');
+      btn.textContent = '✦ 通常モードへ ✦';
+      // 아가씨 이미지로 전환
+      imgNormal.style.display = 'none';
+      imgOjousama.style.display = 'block';
+      if (imgOjousama.src && !imgOjousama.src.includes('IMAGE_')) {
+        placeholder.style.display = 'none';
+      }
+    } else {
+      card.classList.remove('ojousama-mode');
+      btn.textContent = '✦ 令嬢モードへ ✦';
+      // 일반 이미지로 전환
+      imgOjousama.style.display = 'none';
+      imgNormal.style.display = 'block';
+      if (imgNormal.src && !imgNormal.src.includes('IMAGE_')) {
+        placeholder.style.display = 'none';
+      }
+    }
+  }
+
+  // 이미지 로드 실패 시 플레이스홀더 유지
+  document.getElementById('profile-img-normal').onerror = function() {
+    this.style.display = 'none';
+  };
+  document.getElementById('profile-img-ojousama').onerror = function() {
+    this.style.display = 'none';
+  };
+</script>
+</body>
+</html>
