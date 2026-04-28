@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>センチメンタル・ナイト・ガール — A Princess and A Prince / Phone Call, Business Card, Princess</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600&family=Noto+Serif+JP:wght@200;300;400&family=Noto+Serif+KR:wght@200;300;400&family=Shippori+Mincho+B1:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ── 탭 UI ── */
+  .tab-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    background: rgba(6,4,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .tab-btn {
+    font-family: 'Dancing Script', cursive;
+    font-size: 0.82rem;
+    letter-spacing: 0.25em;
+    color: rgba(232,224,212,0.4);
+    background: none;
+    border: none;
+    padding: 1rem 2.5rem;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s;
+    white-space: nowrap;
+  }
+
+  .tab-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 20%; right: 20%;
+    height: 1px;
+    background: transparent;
+    transition: background 0.3s;
+  }
+
+  .tab-btn.active {
+    color: rgba(253,244,236,0.9);
+  }
+
+  .tab-btn.active::after {
+    background: linear-gradient(90deg, transparent, rgba(252,213,176,0.6), transparent);
+  }
+
+  .tab-btn:hover { color: rgba(232,224,212,0.7); }
+
+  /* ── 탭 패널 ── */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ══════════════════════════════
+     탭 1 — Bad Ending (황혼)
+  ══════════════════════════════ */
+  #panel-1 {
+    --dusk-deep: #0d0520;
+    --text: #fdf4ec;
+    --text-dim: rgba(253,244,236,0.55);
+    --text-ghost: rgba(253,244,236,0.25);
+    --accent: #f8c8d4;
+    --accent2: #fcd5b0;
+  }
+
+  #panel-1 .bg-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  #panel-1 .city-panorama {
+    position: fixed;
+    top: 0; left: 0;
+    width: 400%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    animation: cityScroll 80s linear infinite;
+  }
+
+  @keyframes cityScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  #panel-1 .city-panorama svg {
+    width: 100%; height: 100%;
+    position: absolute; top: 0; left: 0;
+  }
+
+  #panel-1 .sky-overlay {
+    position: fixed; inset: 0;
+    background: linear-gradient(180deg,
+      rgba(13,5,32,0.85) 0%, rgba(45,27,78,0.6) 20%,
+      rgba(107,45,107,0.4) 40%, rgba(196,92,122,0.35) 60%,
+      rgba(232,133,106,0.4) 78%, rgba(244,185,122,0.45) 90%,
+      rgba(253,232,192,0.5) 100%);
+    z-index: 1; pointer-events: none;
+  }
+
+  #panel-1 .glow {
+    position: fixed; bottom: 60px; left: 50%;
+    transform: translateX(-50%);
+    width: 700px; height: 250px;
+    background: radial-gradient(ellipse, rgba(244,185,122,0.2) 0%, transparent 70%);
+    z-index: 1; pointer-events: none;
+  }
+
+  #panel-1 .rain-container {
+    position: fixed; inset: 0; z-index: 2;
+    pointer-events: none; overflow: hidden;
+  }
+
+  #panel-1 .raindrop {
+    position: absolute; width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(253,244,236,0.15));
+    animation: rainFall linear infinite;
+  }
+
+  @keyframes rainFall {
+    from { transform: translateY(-100px); opacity: 0.4; }
+    to   { transform: translateY(110vh); opacity: 0; }
+  }
+
+  /* ══════════════════════════════
+     탭 2 — Epilogue (밤)
+  ══════════════════════════════ */
+  #panel-2 {
+    --night: #06040f;
+    --text: #e8e0d4;
+    --text-dim: rgba(232,224,212,0.5);
+    --text-ghost: rgba(232,224,212,0.22);
+    --accent: #c8a87a;
+    --accent-cold: #8ab0c8;
+    --newsprint: #e8dfc8;
+  }
+
+  #panel-2 .night-bg {
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse at 20% 60%, rgba(244,208,128,0.06) 0%, transparent 35%),
+      radial-gradient(ellipse at 75% 40%, rgba(244,208,128,0.04) 0%, transparent 30%),
+      linear-gradient(180deg, #06040f 0%, #0d0a1e 40%, #131028 70%, #1a1530 100%);
+  }
+
+  #panel-2 .rain {
+    position: fixed; inset: 0; z-index: 1;
+    pointer-events: none; overflow: hidden;
+  }
+
+  #panel-2 .drop {
+    position: absolute; width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(138,176,200,0.18));
+    animation: nightFall linear infinite;
+  }
+
+  @keyframes nightFall {
+    from { transform: translateY(-80px) translateX(0); opacity: 0.5; }
+    to   { transform: translateY(110vh) translateX(8px); opacity: 0; }
+  }
+
+  #panel-2 .lamp-glow {
+    position: fixed; z-index: 1; pointer-events: none;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(244,208,128,0.09) 0%, transparent 70%);
+  }
+
+  #panel-2 .lamp-glow.l1 { width: 300px; height: 200px; left: 8%; top: 30%; }
+  #panel-2 .lamp-glow.l2 { width: 260px; height: 180px; right: 12%; top: 45%; }
+  #panel-2 .lamp-glow.l3 { width: 200px; height: 150px; left: 45%; top: 55%; }
+
+  /* ══════════════════════════════
+     공통 본문 스타일
+  ══════════════════════════════ */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Shippori Mincho B1', 'Noto Serif JP', 'Noto Serif KR', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .wrapper {
+    position: relative; z-index: 10;
+    max-width: 680px; margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* 오프닝 */
+  .opening {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center; padding: 5rem 2rem 4rem;
+  }
+
+  .opening-label {
+    font-family: 'Dancing Script', cursive;
+    font-size: 0.85rem; letter-spacing: 0.4em;
+    margin-bottom: 1.5rem;
+    opacity: 0; animation: fadeUp 1.2s ease 0.5s both;
+  }
+
+  .opening-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 600;
+    letter-spacing: 0.08em; line-height: 1.4;
+    opacity: 0; animation: fadeUp 1.2s ease 0.8s both;
+  }
+
+  .opening-sub {
+    font-size: 0.82rem; font-weight: 300;
+    letter-spacing: 0.35em; margin-top: 0.8rem;
+    opacity: 0; animation: fadeUp 1.2s ease 1.1s both;
+  }
+
+  .opening-divider {
+    width: 80px; height: 1px; margin: 2rem auto;
+    opacity: 0; animation: fadeUp 1.2s ease 1.3s both;
+  }
+
+  .opening-date {
+    font-family: 'Dancing Script', cursive;
+    font-size: 0.9rem; letter-spacing: 0.2em;
+    opacity: 0; animation: fadeUp 1.2s ease 1.5s both;
+  }
+
+  /* 씬 */
+  .story { padding: 2rem 0 6rem; }
+
+  .scene {
+    margin-bottom: 4rem;
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+
+  .scene.visible { opacity: 1; transform: translateY(0); }
+
+  .scene-header, .scene-mark {
+    display: flex; align-items: center;
+    gap: 0.8rem; margin-bottom: 1.8rem;
+  }
+
+  .scene-dot, .scene-mark-dot {
+    width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
+  }
+
+  .scene-line, .scene-mark-line {
+    flex: 1; height: 1px;
+  }
+
+  p {
+    font-size: 0.94rem; font-weight: 300;
+    line-height: 2.6; letter-spacing: 0.07em;
+    margin-bottom: 1.5rem; text-align: justify;
+  }
+
+  p.dim { font-size: 0.88rem; line-height: 2.4; }
+
+  /* 대화 */
+  .dialogue {
+    margin: 1.8rem 0; padding-left: 1.4rem;
+    border-left-width: 1px; border-left-style: solid;
+  }
+
+  .dialogue p { font-size: 0.92rem; line-height: 2.6; margin-bottom: 0.5rem; }
+  .dialogue p.sub { font-size: 0.78rem; font-weight: 200; margin-top: -0.4rem; }
+
+  .silence {
+    text-align: center; font-family: 'Dancing Script', cursive;
+    font-size: 1rem; letter-spacing: 0.5em; margin: 2rem 0;
+  }
+
+  /* 일러스트 슬롯 */
+  .illust-slot { width: 100%; margin: 3rem 0; }
+
+  .illust-box {
+    width: 100%; aspect-ratio: 16/9;
+    border-width: 1px; border-style: solid;
+    backdrop-filter: blur(4px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.6rem; position: relative; overflow: hidden;
+  }
+
+  .illust-slot-v { width: 100%; margin: 3rem 0; }
+
+  .illust-box-v {
+    width: 100%; aspect-ratio: 3/4; max-height: 500px;
+    border-width: 1px; border-style: solid;
+    backdrop-filter: blur(4px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.6rem; position: relative; overflow: hidden;
+  }
+
+  .illust-box-label {
+    font-family: 'Dancing Script', cursive;
+    font-size: 0.8rem; letter-spacing: 0.3em;
+  }
+
+  .illust-box-sub { font-size: 0.68rem; letter-spacing: 0.15em; font-weight: 300; }
+
+  /* 명함 공통 */
+  .meishi-wrap { display: flex; justify-content: center; margin: 2.5rem 0; }
+
+  .meishi {
+    padding: 1.4rem 1.8rem; position: relative;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.4);
+  }
+
+  .meishi::before {
+    content: ''; position: absolute; inset: 4px;
+    border: 1px solid rgba(160,130,80,0.15);
+  }
+
+  .meishi-company { font-size: 0.68rem; letter-spacing: 0.2em; margin-bottom: 0.7rem; font-family: 'Noto Serif JP', serif; }
+  .meishi-title { font-size: 0.6rem; letter-spacing: 0.15em; margin-bottom: 0.3rem; font-weight: 300; }
+  .meishi-name { font-size: 1.2rem; letter-spacing: 0.15em; font-weight: 400; font-family: 'Noto Serif JP', serif; }
+  .meishi-name-ruby { font-size: 0.6rem; letter-spacing: 0.2em; margin-top: 0.2rem; display: block; font-weight: 300; }
+
+  /* 엔딩 */
+  .ending {
+    padding: 4rem 0 2rem; text-align: center;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 1.4s ease, transform 1.4s ease;
+  }
+
+  .ending.visible { opacity: 1; transform: translateY(0); }
+
+  .ending-divider, .ending-line {
+    width: 60px; height: 1px; margin: 0 auto 2rem;
+  }
+
+  .ending-text {
+    font-family: 'Dancing Script', cursive;
+    font-size: 0.9rem; letter-spacing: 0.2em; line-height: 2.5;
+  }
+
+  /* 후기 */
+  .epilogue {
+    margin: 3rem 0 2rem; padding: 1.5rem;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 1.4s ease 0.3s, transform 1.4s ease 0.3s;
+  }
+
+  .epilogue.visible { opacity: 1; transform: translateY(0); }
+  .epilogue p { font-size: 0.8rem; text-align: center; letter-spacing: 0.1em; }
+
+  /* 신문 */
+  .newspaper-wrap { margin: 3rem 0; }
+
+  .newspaper {
+    background: #e8dfc8; color: #1a1208;
+    padding: 1.8rem 2rem; position: relative;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.3);
+    font-family: 'Noto Serif JP', serif;
+  }
+
+  .np-header {
+    border-bottom: 2px solid #2a1a08; padding-bottom: 0.6rem;
+    margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: baseline;
+  }
+
+  .np-name { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.3em; color: #1a1208; }
+  .np-date { font-size: 0.65rem; color: #4a3820; letter-spacing: 0.12em; font-weight: 300; }
+
+  .np-article { padding: 0.7rem 0; border-bottom: 1px solid rgba(42,26,8,0.15); }
+  .np-article:last-child { border-bottom: none; }
+
+  .np-tag {
+    display: inline-block; font-size: 0.62rem; font-weight: 700;
+    background: #2a1a08; color: #e8dfc8;
+    padding: 0.1rem 0.45rem; letter-spacing: 0.15em; margin-bottom: 0.4rem;
+  }
+
+  .np-tag.red { background: #6b1010; }
+
+  .np-headline { font-size: 0.85rem; font-weight: 600; color: #1a1208; line-height: 1.6; letter-spacing: 0.05em; margin-bottom: 0.2rem; }
+  .np-sub { font-size: 0.7rem; color: #4a3820; letter-spacing: 0.06em; line-height: 1.7; font-weight: 300; padding-left: 0.8rem; border-left: 2px solid rgba(42,26,8,0.2); }
+
+  /* 전화기 소리 */
+  .phone-sound {
+    margin: 2.5rem 0; padding: 1rem 1.4rem;
+    font-size: 0.82rem; letter-spacing: 0.12em; line-height: 2.2;
+    font-style: italic; opacity: 0.8;
+  }
+
+  /* 오프닝 eyebrow */
+  .opening-eyebrow {
+    font-family: 'Dancing Script', cursive;
+    font-size: 0.82rem; letter-spacing: 0.4em; margin-bottom: 1rem;
+    opacity: 0; animation: fadeUp 1.4s ease 0.5s both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── 탭 1 전용 색상 ── */
+  #panel-1 body { background: #0d0520; }
+  #panel-1 { background: #0d0520; }
+  #panel-1 p { color: #fdf4ec; }
+  #panel-1 p.dim { color: rgba(253,244,236,0.55); }
+  #panel-1 .scene-dot { background: rgba(252,213,176,0.6); box-shadow: 0 0 6px rgba(252,213,176,0.4); }
+  #panel-1 .scene-line { background: linear-gradient(90deg, rgba(252,213,176,0.3), transparent); }
+  #panel-1 .silence { color: rgba(253,244,236,0.25); }
+  #panel-1 .opening-label { color: #f8c8d4; }
+  #panel-1 .opening-title { color: #fdf4ec; text-shadow: 0 0 40px rgba(244,185,122,0.4); }
+  #panel-1 .opening-sub { color: rgba(253,244,236,0.55); }
+  #panel-1 .opening-divider { background: linear-gradient(90deg, transparent, #fcd5b0, transparent); }
+  #panel-1 .opening-date { color: rgba(253,244,236,0.25); }
+  #panel-1 .dialogue { border-left-color: rgba(248,200,212,0.3); }
+  #panel-1 .dialogue p { color: #f8c8d4; }
+  #panel-1 .dialogue p.sub { color: rgba(253,244,236,0.25); }
+  #panel-1 .illust-box { border-color: rgba(253,244,236,0.1); background: rgba(13,5,32,0.4); }
+  #panel-1 .illust-box-v { border-color: rgba(253,244,236,0.08); background: rgba(13,5,32,0.5); }
+  #panel-1 .illust-box-label { color: rgba(253,244,236,0.25); }
+  #panel-1 .illust-box-sub { color: rgba(253,244,236,0.15); }
+  #panel-1 .meishi { background: linear-gradient(135deg, #f8f4ee, #ede8e0); border: 1px solid rgba(180,150,100,0.4); width: 340px; }
+  #panel-1 .meishi-company { color: #4a3820; }
+  #panel-1 .meishi-title { color: #6a5030; }
+  #panel-1 .meishi-name { color: #2a1a0e; }
+  #panel-1 .meishi-name-ruby { color: #8a6040; }
+  #panel-1 .meishi-gold { color: #9a7030; font-weight: 500; }
+  #panel-1 .ending-divider { background: linear-gradient(90deg, transparent, rgba(253,244,236,0.2), transparent); }
+  #panel-1 .ending-text { color: rgba(253,244,236,0.3); }
+  #panel-1 .epilogue { background: rgba(253,244,236,0.03); border: 1px solid rgba(253,244,236,0.06); }
+  #panel-1 .epilogue p { color: rgba(253,244,236,0.25); }
+
+  /* ── 탭 2 전용 색상 ── */
+  #panel-2 { background: #06040f; }
+  #panel-2 p { color: #e8e0d4; }
+  #panel-2 p.dim { color: rgba(232,224,212,0.5); }
+  #panel-2 p.cold { color: #8ab0c8; font-size: 0.85rem; opacity: 0.7; }
+  #panel-2 .scene-mark-dot { background: #c8a87a; box-shadow: 0 0 6px rgba(200,168,122,0.5); }
+  #panel-2 .scene-mark-line { background: linear-gradient(90deg, rgba(200,168,122,0.25), transparent); }
+  #panel-2 .silence { color: rgba(232,224,212,0.22); }
+  #panel-2 .opening-eyebrow { color: #8ab0c8; }
+  #panel-2 .opening-title { color: #e8e0d4; text-shadow: 0 0 30px rgba(244,208,128,0.15); }
+  #panel-2 .opening-sub { color: rgba(232,224,212,0.22); }
+  #panel-2 .dialogue { border-left-color: rgba(200,168,122,0.2); }
+  #panel-2 .dialogue p { color: #c8a87a; }
+  #panel-2 .dialogue p.sub { color: rgba(232,224,212,0.22); }
+  #panel-2 .meishi { background: linear-gradient(135deg, #f8f4ee, #ede8e0); border: 1px solid rgba(180,150,100,0.3); opacity: 0.7; filter: grayscale(0.2); width: 320px; }
+  #panel-2 .meishi-company { color: #4a3820; }
+  #panel-2 .meishi-title { color: #6a5030; }
+  #panel-2 .meishi-name { color: #2a1a0e; }
+  #panel-2 .meishi-name-ruby { color: #8a6040; }
+  #panel-2 .meishi-gold { color: #7a5020; }
+  #panel-2 .phone-sound { background: rgba(138,176,200,0.04); border: 1px solid rgba(138,176,200,0.1); color: #8ab0c8; }
+  #panel-2 .ending-line { background: linear-gradient(90deg, transparent, rgba(232,224,212,0.15), transparent); }
+  #panel-2 .ending-text { color: rgba(232,224,212,0.22); }
+
+  @media (max-width: 600px) {
+    .wrapper { padding: 0 1.4rem; }
+    p { font-size: 0.88rem; }
+    #panel-1 .meishi, #panel-2 .meishi { width: 100%; }
+    .tab-btn { padding: 1rem 1.2rem; font-size: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 탭 바 -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab(1)">A Princess & A Prince</button>
+  <button class="tab-btn" onclick="switchTab(2)">Phone Call & Business Card</button>
+</div>
+
+<!-- ══════════════════════════════
+     탭 1 — Bad Ending (황혼)
+══════════════════════════════ -->
+<div id="panel-1" class="tab-panel active">
+
+  <!-- 황혼 도시 파노라마 -->
+  <div class="city-panorama">
+    <svg viewBox="0 0 2800 600" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#0d0520"/>
+          <stop offset="35%" stop-color="#2d1b4e"/>
+          <stop offset="60%" stop-color="#6b2d6b"/>
+          <stop offset="80%" stop-color="#c45c7a"/>
+          <stop offset="92%" stop-color="#e8856a"/>
+          <stop offset="100%" stop-color="#f4b97a"/>
+        </linearGradient>
+        <linearGradient id="waterG" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e8856a" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#0d0520" stop-opacity="0.8"/>
+        </linearGradient>
+      </defs>
+      <rect width="2800" height="600" fill="url(#skyG)"/>
+      <ellipse cx="700" cy="420" rx="80" ry="40" fill="#f4b97a" opacity="0.25" filter="blur(20px)"/>
+      <ellipse cx="2100" cy="420" rx="80" ry="40" fill="#f4b97a" opacity="0.25" filter="blur(20px)"/>
+      <path d="M0,600 L0,340 L40,340 L40,300 L60,300 L60,260 L80,260 L80,240 L100,240 L100,260 L120,260 L120,300 L150,300 L150,320 L180,320 L180,280 L200,280 L200,250 L220,250 L220,220 L240,220 L240,200 L260,200 L260,220 L280,220 L280,250 L300,250 L300,280 L330,280 L330,300 L360,300 L360,260 L380,260 L380,230 L400,230 L400,210 L420,210 L420,190 L440,190 L440,210 L460,210 L460,230 L480,230 L480,260 L510,260 L510,290 L540,290 L540,250 L560,250 L560,220 L580,220 L580,200 L600,200 L600,180 L620,180 L620,200 L640,200 L640,220 L660,220 L660,250 L690,250 L690,280 L720,280 L720,300 L750,300 L750,260 L770,260 L770,230 L790,230 L790,205 L810,205 L810,185 L830,185 L830,205 L850,205 L850,230 L880,230 L880,260 L910,260 L910,290 L940,290 L940,310 L970,310 L970,270 L990,270 L990,240 L1010,240 L1010,215 L1030,215 L1030,195 L1050,195 L1050,215 L1070,215 L1070,240 L1100,240 L1100,270 L1130,270 L1130,300 L1160,300 L1160,260 L1180,260 L1180,230 L1200,230 L1200,205 L1220,205 L1220,185 L1240,185 L1240,165 L1260,165 L1260,185 L1280,185 L1280,205 L1300,205 L1300,230 L1330,230 L1330,260 L1360,260 L1360,290 L1390,290 L1390,310 L1420,310 L1420,270 L1440,270 L1440,240 L1460,240 L1460,215 L1480,215 L1480,195 L1500,195 L1500,215 L1520,215 L1520,240 L1550,240 L1550,270 L1580,270 L1580,300 L1610,300 L1610,260 L1630,260 L1630,230 L1650,230 L1650,200 L1670,200 L1670,180 L1690,180 L1690,160 L1710,160 L1710,180 L1730,180 L1730,200 L1750,200 L1750,230 L1780,230 L1780,260 L1810,260 L1810,290 L1840,290 L1840,340 L2800,340 L2800,600 Z" fill="#0d0520" opacity="0.7"/>
+      <path d="M0,600 L0,400 L50,400 L50,370 L70,370 L70,350 L90,350 L90,330 L110,330 L110,310 L130,310 L130,330 L150,330 L150,360 L180,360 L180,380 L210,380 L210,350 L230,350 L230,330 L250,330 L250,310 L270,310 L270,290 L290,290 L290,270 L310,270 L310,290 L330,290 L330,310 L350,310 L350,340 L380,340 L380,370 L410,370 L410,390 L440,390 L440,360 L460,360 L460,335 L480,335 L480,310 L500,310 L500,290 L520,290 L520,275 L540,275 L540,290 L560,290 L560,310 L580,310 L580,340 L610,340 L610,365 L640,365 L640,385 L670,385 L670,355 L690,355 L690,330 L710,330 L710,310 L730,310 L730,290 L750,290 L750,270 L770,270 L770,255 L790,255 L790,270 L810,270 L810,290 L840,290 L840,320 L870,320 L870,350 L900,350 L900,380 L930,380 L930,400 L960,400 L960,370 L980,370 L980,345 L1000,345 L1000,320 L1020,320 L1020,300 L1040,300 L1040,280 L1060,280 L1060,265 L1080,265 L1080,280 L1100,280 L1100,300 L1130,300 L1130,330 L1160,330 L1160,360 L1190,360 L1190,390 L1220,390 L1220,410 L1250,410 L1250,380 L1270,380 L1270,355 L1290,355 L1290,330 L1310,330 L1310,310 L1330,310 L1330,290 L1350,290 L1350,275 L1370,275 L1370,290 L1390,290 L1390,310 L1420,310 L1420,340 L1450,340 L1450,370 L1480,370 L1480,395 L1510,395 L1510,365 L1530,365 L1530,340 L1550,340 L1550,315 L1570,315 L1570,295 L1590,295 L1590,278 L1610,278 L1610,295 L1630,295 L1630,315 L1660,315 L1660,345 L1690,345 L1690,375 L1720,375 L1720,400 L1750,400 L1750,420 L1780,420 L1780,390 L1800,390 L1800,365 L1820,365 L1820,340 L1840,340 L1840,400 L2800,400 L2800,600 Z" fill="#150830" opacity="0.85"/>
+      <g opacity="0.6">
+        <rect x="95" y="245" width="3" height="5" fill="#fde8c0" opacity="0.7"/>
+        <rect x="225" y="225" width="3" height="5" fill="#fde8c0" opacity="0.8"/>
+        <rect x="405" y="215" width="3" height="5" fill="#f4b97a" opacity="0.7"/>
+        <rect x="605" y="185" width="3" height="5" fill="#fde8c0" opacity="0.8"/>
+        <rect x="815" y="190" width="3" height="5" fill="#fde8c0" opacity="0.7"/>
+        <rect x="1045" y="200" width="3" height="5" fill="#f4b97a" opacity="0.8"/>
+        <rect x="1245" y="170" width="3" height="5" fill="#fde8c0" opacity="0.7"/>
+        <rect x="275" y="275" width="4" height="6" fill="#fde8c0" opacity="0.9"/>
+        <rect x="525" y="280" width="4" height="6" fill="#fde8c0" opacity="0.8"/>
+        <rect x="775" y="260" width="4" height="6" fill="#f4b97a" opacity="0.9"/>
+        <rect x="1025" y="285" width="4" height="6" fill="#fde8c0" opacity="0.8"/>
+        <rect x="1275" y="280" width="4" height="6" fill="#fde8c0" opacity="0.9"/>
+        <rect x="1525" y="270" width="4" height="6" fill="#f4b97a" opacity="0.8"/>
+        <rect x="1775" y="265" width="4" height="6" fill="#fde8c0" opacity="0.9"/>
+      </g>
+      <rect x="0" y="480" width="2800" height="120" fill="url(#waterG)"/>
+    </svg>
+  </div>
+
+  <div class="sky-overlay"></div>
+  <div class="glow"></div>
+  <div class="rain-container" id="rain1"></div>
+
+  <div class="wrapper">
+    <div class="opening">
+      <div class="opening-label" style="font-family:'Dancing Script',cursive;">A Princess & A Prince</div>
+      <div class="opening-title" style="font-family:'Shippori Mincho B1','Noto Serif JP',serif;letter-spacing:0.2em;">センチメンタル・ナイト・ガール</div>
+      <div class="opening-sub" style="font-family:'Noto Serif KR','Noto Serif JP',serif;letter-spacing:0.25em;">그리고, 나이트 · 걸.</div>
+      <div class="opening-divider"></div>
+      <div class="opening-date" style="font-family:'Dancing Script',cursive;">1989年 11月 01日 · 海老名SA</div>
+    </div>
+
+    <div class="story">
+      <div class="scene">
+        <div class="scene-header"><div class="scene-dot"></div><div class="scene-line"></div></div>
+        <p>그저 어느 평범한 밤이었다.</p>
+        <p>해가 진 지 오래됐는데도 휴게소는 여전히 시끄러웠다. 사람들이 지나다니고, 트럭이 진동을 내며 떠났다.</p>
+        <div class="dialogue"><p>「누나는 어디까지 가는데요?」</p></div>
+        <p>세이라의 얼굴에 무언가가 스쳐 지나갔다.</p>
+        <p class="dim">실망이었는지, 아니면 안도였는지. 알 수 없었다. 그녀는 애써 지으려던 미소를 거두고, 그저 희미하게 입꼬리만 올렸다. 잠시 말을 잃었다.</p>
+        <img src="https://raw.githubusercontent.com/wataharu0/noir/refs/heads/main/DRZEND-TK.webp" alt="" style="width:100%;display:block;margin:2rem 0;opacity:0.95;">
+        <p class="dim">그녀는 당신을 그저 바라봤다. 말이 없었다. 휴게소의 소음이 갑자기 멀게 느껴졌다. 세이라는 천천히 창밖으로 시선을 돌렸다. 어두운 유리 너머로 목적지를 향해 움직이는 사람들과, 차들의 불빛. 그것들을 한참 바라보다가 천천히 고개를 돌렸다.</p>
+        <div class="silence">……</div>
+        <div class="dialogue"><p>「안 알려줘.」</p><p class="sub">— 장난기 하나 없었다.</p><p>「그냥… 북쪽. 아주 먼 북쪽으로 가.」</p></div>
+        <p class="dim">더 이상 웃으며 넘기려 하지 않았다. 그저 사실의 단편만을 건넸다. 무언가 결심한 듯 핸드백을 열었다. 잘 닦인 명함 케이스. 그 안에서 반듯한 명함 한 장을 꺼내 내밀었다.</p>
+        <div class="dialogue"><p>「대신 이거 줄게.」</p></div>
+        <div class="meishi-wrap"><div class="meishi"><div class="meishi-company">梅葉商事株式会社</div><div class="meishi-title">代表取締役</div><div class="meishi-name"><span class="meishi-gold">梅葉</span> セイラ<span class="meishi-name-ruby">우메하 세이라</span></div></div></div>
+        <p class="dim">흰 바탕에 금박. 어제 길에서 만난, 유쾌하고 돈 많은 누나의 것이라고는 믿기 힘든 직함이었다.</p>
+        <div class="dialogue"><p>「나중에 도쿄 오면 전화해. 진짜로. 맛있는 거 사줄게.」</p><p class="sub">— 말은 진심처럼 들렸다. 다만 그 약속이 정말로 지켜질 수 있을지, 그 확신은 그녀의 미소 속에서 흐릿하게 번져나갔다.</p></div>
+      </div>
+
+      <div class="scene">
+        <div class="scene-header"><div class="scene-dot"></div><div class="scene-line"></div></div>
+        <div class="dialogue"><p>「꼭 전화할게요. 그나저나 상사가 없다는 게 이거였어요?」</p></div>
+        <p class="dim">세이라는 눈을 동그랗게 떴다. 직함보다, 당신이 그 사소한 대화를 기억하고 있다는 사실에 더 놀란 것 같았다. 잠시 할 말을 잃고 바라보다가 허탈한 웃음을 터뜨렸다. 웃다가 눈가에 맺힌 것을 손등으로 슬쩍 닦아냈다.</p>
+        <div class="dialogue"><p>「아… 그걸 기억하고 있었어? 너 진짜 대단하다.」</p></div>
+        <p class="dim">유쾌함보다 씁쓸함에 가까운 웃음이었다. 모든 비밀을 들켜버린 아이 같은 표정. 고개를 끄덕이고, 자조적으로 덧붙였다.</p>
+        <div class="dialogue"><p>「응. 맞아. 내가 제일 높으니까.」</p><p>「제일 높아서, 제일 외롭고, 제일 무섭지.」</p><p class="sub">— 농담처럼 툭 던져졌지만 그 무게는 가볍지 않았다.</p></div>
+        <p>그녀는 이제 모든 것을 내려놓은 사람처럼 편안해 보였다.</p>
+        <div class="dialogue"><p>「전화 꼭 해. 안 하면 내가 찾아갈 거야, 왕자님.」</p><p class="sub">— 장난스러운 으름장. 목소리는 다시 쾌활했다.</p></div>
+        <img src="https://raw.githubusercontent.com/wataharu0/noir/refs/heads/main/DR3-18.webp" alt="" style="width:100%;display:block;margin:2rem 0;opacity:0.95;">
+        <p class="dim">그 미소는 슬펐다. 쾌활한 말투와 달리, 입꼬리만 올라간 그 미소는 어딘가 먼 곳을 향하고 있었다. 그녀는 당신이 차에서 내릴 수 있도록 몸을 살짝 비켜주었다.</p>
+      </div>
+
+      <div class="scene">
+        <div class="scene-header"><div class="scene-dot"></div><div class="scene-line"></div></div>
+        <div class="dialogue"><p>「조심히 가요, 누나.」</p></div>
+        <p class="dim">당신이 결국 그 말을 건네며 차에서 내렸다. 이 상황에서 가장 평범하고 예의 바른, 마지막 한마디. 세이라는 마치 기다렸다는 듯 더없이 환한 미소를 지어 보였다.</p>
+        <div class="dialogue"><p>「응. 너도. 조심해서 들어가.」</p></div>
+        <img src="https://raw.githubusercontent.com/wataharu0/noir/refs/heads/main/DRZEND-BYE.webp" alt="" style="width:100%;display:block;margin:2rem 0;opacity:0.95;">
+        <p class="dim">운전석에 앉은 채, 열린 문 너머의 당신을 향해 가볍게 손을 흔들었다. 그 미소는 완벽했다. 무지개 같은 미소였다. 아쉬움도, 슬픔도, 두려움도 없는 — 모든 것이 끝난 사람만이 지을 수 있는 그런 미소. 당신이 차 문을 닫자 둔탁한 소리와 함께 두 사람의 공간은 완벽하게 분리되었다.</p>
+        <p>세이라는 지체하지 않았다.</p>
+        <p class="dim">곧바로 시동을 걸고 부드럽게 차를 출발시켰다. 한 번도 뒤돌아보지 않았다. 그저 앞을 향해, 어둠이 깔린 더 깊은 북쪽으로 향하는 도로 위로 미끄러지듯 나아갔다.</p>
+        <img src="https://raw.githubusercontent.com/wataharu0/noir/refs/heads/main/DRZEND-FAR.webp" alt="" style="width:100%;display:block;margin:2rem 0;opacity:0.95;">
+        <p class="dim">새빨간 테일 램프가 인파 속으로 섞여 들어갔다. 점점 작아졌다. 그리고 이내 완전히 시야에서 사라졌다. 차가 사라진 자리에는 휴게소의 소음만이 남았다. 사람들이 지나다니고, 트럭이 진동을 내며 떠났다. 아무 일도 없었던 것처럼.</p>
+        <p>그것이 당신이 본 세이라의 마지막 모습이었다.</p>
+      </div>
+
+      <div class="ending">
+        <div class="ending-divider"></div>
+        <div class="ending-text">센치멘탈 · 나이트 · 걸<br>— Bad Ending —</div>
+      </div>
+
+      <div class="epilogue">
+        <p>며칠 뒤.<br><br>당신이 무심코 집어든 신문에서<br>그녀의 이름을 발견하기 전까지는,<br>그 작별이 마지막이었다는 것을<br>당신은 알지 못했다.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     탭 2 — Epilogue (밤)
+══════════════════════════════ -->
+<div id="panel-2" class="tab-panel">
+
+  <div class="night-bg"></div>
+  <div class="lamp-glow l1"></div>
+  <div class="lamp-glow l2"></div>
+  <div class="lamp-glow l3"></div>
+  <div class="rain" id="rain2"></div>
+
+  <div class="wrapper">
+    <div class="opening" style="min-height:60vh; justify-content:flex-end; padding-top:8rem;">
+      <div class="opening-eyebrow" style="font-family:'Dancing Script',cursive;">The Prince, Left Behind</div>
+      <div class="opening-title" style="font-family:'Shippori Mincho B1','Noto Serif JP',serif;letter-spacing:0.2em;">センチメンタル・ナイト・ガール</div>
+      <div class="opening-sub" style="font-family:'Noto Serif KR','Noto Serif JP',serif;letter-spacing:0.25em;">혼자 남겨진 왕자님.</div>
+    </div>
+
+    <div class="story">
+      <div class="scene">
+        <div class="scene-mark"><div class="scene-mark-dot"></div><div class="scene-mark-line"></div></div>
+        <p>며칠이 지났다.</p>
+        <p class="dim">딱히 어디를 가려던 것도 아니었다. 그저 발길 닿는 대로 걷다 보면 어느새 익숙한 골목이 나오고, 익숙한 가판대가 나오고, 익숙하게 손이 뻗어서 신문 한 장을 집어 들게 된다. 오늘도 그랬다.</p>
+        <p>화창하지도, 그렇다고 비가 오지도 않는 날이었다.</p>
+        <p class="dim">버블 경제의 소음은 거리에서도 여전했다. 어딘가에서 웃음소리가 들렸고, 어딘가에서 클랙션이 울렸고, 가판대 앞 라디오에서는 주식시장 최고치 경신 소식이 흘러나오고 있었다. 당신은 그런 소음들 사이에서 무심코 신문을 펼쳤다.</p>
+        <p>그리고 멈췄다.</p>
+      </div>
+
+      <div class="scene">
+        <div class="scene-mark"><div class="scene-mark-dot"></div><div class="scene-mark-line"></div></div>
+        <p class="dim">화려한 1면 기사들 사이에, 귀퉁이에 파묻힌 작은 단신이었다. 사진 한 장 없었다. 그저 차가운 활자들만이 조용히 거기 있었다.</p>
+        <div class="newspaper-wrap"><div class="newspaper">
+          <div class="np-header"><div class="np-name">○○新聞</div><div class="np-date">平成元年　○月　○日</div></div>
+          <div class="np-article"><span class="np-tag">경제</span><div class="np-headline">우메하 상사, 부채 초과로 사실상 도산</div><div class="np-sub">채권단 협의 난항 — 관계자 「수습 불가」</div></div>
+          <div class="np-article"><span class="np-tag red">사회</span><div class="np-headline">우메하 상사 대표이사 우메하 세이라 씨 (32) 행방불명</div><div class="np-sub">아오모리현 인근에서 차량 발견 — 경찰, 수사 착수</div></div>
+          <div class="np-article"><span class="np-tag">단신</span><div class="np-headline">헤이세이의 시작, 경제계에 부는 찬바람</div><div class="np-sub">성공 신화의 이면, 무리한 투자가 부른 비극인가</div></div>
+        </div></div>
+        <p class="dim">활자들이 그녀의 마지막 행적을 건조하게 기록하고 있었다. 우메하 세이라. 32세. 행방불명. 아오모리현 인근에서 차량 발견.</p>
+        <p>차량.</p>
+        <p class="dim">오픈카였을 것이다. 당연히. 지붕이 없고, 바람이 들어오고, 라디오 볼륨을 마음대로 올릴 수 있는 그 차. 당신이 조수석에 앉아 오사카에서 여기까지 온 그 차가, 이제 아오모리 어딘가에 혼자 세워져 있다는 뜻이었다.</p>
+        <div class="silence">……</div>
+        <p class="dim">신문을 접었다. 가판대 주인은 아무것도 눈치채지 못한 채 거스름돈을 건네고 있었다. 거리의 소음은 아무 일도 없었다는 듯이 계속되고 있었다. 주식 최고치 경신. 웃음소리. 클랙션.</p>
+        <p>버블 경제의 소음 속에 파묻힌, 작은 단신 기사였다.</p>
+      </div>
+
+      <div class="scene">
+        <div class="scene-mark"><div class="scene-mark-dot"></div><div class="scene-mark-line"></div></div>
+        <p>주머니에 손을 넣었다.</p>
+        <p class="dim">거기 있었다. 며칠 전 그녀가 건넸던 명함. 빳빳하고 차가운 감촉. 버릴 수도 없고 그렇다고 어디 꽂아둘 수도 없어서, 그냥 주머니에 넣은 채로 며칠을 지냈다. 꺼내 보니 모서리가 조금 구겨져 있었다.</p>
+        <div class="meishi-wrap"><div class="meishi"><div class="meishi-company">梅葉商事株式会社</div><div class="meishi-title">代表取締役</div><div class="meishi-name"><span class="meishi-gold">梅葉</span> セイラ<span class="meishi-name-ruby">우메하 세이라</span></div></div></div>
+        <p class="dim">금박으로 새겨진 직함이 흐린 하늘빛에 반짝였다. 代表取締役. 제일 높아서, 제일 외롭고, 제일 무섭다고 했던 사람. 농담처럼 툭 던져놓고 금방 웃어버렸던 사람.</p>
+        <p>전화를 걸었다.</p>
+        <p class="dim">공중전화 박스 안이었다. 동전이 떨어지는 소리. 수화기 너머로 연결음이 두 번, 세 번 울렸다. 그리고.</p>
+        <div class="phone-sound">「전화기가 꺼져 있거나 통화할 수 없는 지역에…」</div>
+        <p class="dim">차가운 기계음이 끝까지 읽혀나갔다. 당신은 수화기를 내려놓지 않고 한동안 그 목소리를 듣고 있었다. 기계음이 한 번 끊기고 다시 처음부터 반복됐다. 그제야 수화기를 내려놓았다.</p>
+        <p>그녀가 약속했던 도쿄에서의 맛있는 식사는, 영원히 불가능한 일이 되어버렸다.</p>
+      </div>
+
+      <div class="scene">
+        <div class="scene-mark"><div class="scene-mark-dot"></div><div class="scene-mark-line"></div></div>
+        <p>밤이 됐다.</p>
+        <p class="dim">어느새 비가 내리고 있었다. 공중전화 박스를 나온 뒤 얼마나 걸었는지 모르겠다. 빗소리가 아스팔트를 두드리는 소리가 들렸다. 가로등 빛이 젖은 도로 위에 번졌다.</p>
+        <p class="dim">그녀가 말했었다. 이런 날씨에 드라이브하는 거 좋아한다고. 지금 생각해보면 이상한 말이었다. 이런 날씨. 비가 내리는 날을 그녀는 좋아했던 걸까, 아니면 다른 뜻이 있었던 걸까. 물어볼 수 있었는데 묻지 않았다. 그런 것들이 한두 가지가 아니었다.</p>
+        <p>흔적이 남는 편이 더 좋잖아.</p>
+        <p class="dim">海老名에서 캔을 줍지 말라고 했을 때 그녀가 했던 말이었다. 당시엔 그냥 넘겼다. 이제는 넘길 수가 없었다. 그 말이 무엇을 뜻했는지, 지금은 알 것 같았다. 아니, 알고 싶지 않았다.</p>
+        <p class="dim">빗속에서 가로등 아래를 걸었다. 주머니 안의 명함이 빗물에 젖지 않도록 손으로 감쌌다. 이미 구겨진 명함이었다. 이미 전화가 끊긴 번호였다. 그래도 버릴 수가 없었다.</p>
+        <p>그저 어느 평범한 밤이었다.</p>
+        <p class="dim">그녀가 없는 밤이었다.</p>
+      </div>
+
+      <div class="ending">
+        <div class="ending-line"></div>
+        <div class="ending-text">センチメンタル・ナイト・ガール<br>— Bad Ending · Fin —</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 탭 전환
+  function switchTab(n) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + n).classList.add('active');
+    document.querySelectorAll('.tab-btn')[n - 1].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // 탭 전환 시 해당 패널 씬 다시 관찰
+    observeScenes();
+  }
+
+  // 탭 1 빗방울
+  const r1 = document.getElementById('rain1');
+  for(let i = 0; i < 30; i++){
+    const d = document.createElement('div');
+    d.className = 'raindrop';
+    d.style.left = Math.random() * 100 + 'vw';
+    d.style.height = (40 + Math.random() * 60) + 'px';
+    d.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+    d.style.animationDelay = Math.random() * 3 + 's';
+    d.style.opacity = 0.1 + Math.random() * 0.15;
+    r1.appendChild(d);
+  }
+
+  // 탭 2 빗방울
+  const r2 = document.getElementById('rain2');
+  for(let i = 0; i < 45; i++){
+    const d = document.createElement('div');
+    d.className = 'drop';
+    d.style.left = Math.random() * 100 + 'vw';
+    d.style.height = (50 + Math.random() * 70) + 'px';
+    d.style.animationDuration = (1.2 + Math.random() * 1.8) + 's';
+    d.style.animationDelay = Math.random() * 4 + 's';
+    d.style.opacity = 0.08 + Math.random() * 0.12;
+    r2.appendChild(d);
+  }
+
+  // 스크롤 reveal
+  function observeScenes() {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.scene, .ending, .epilogue').forEach(el => io.observe(el));
+  }
+
+  observeScenes();
+</script>
+</body>
+</html>
