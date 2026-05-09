@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>夢の果て</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Noto+Serif+KR:wght@300;400&family=Shippori+Mincho:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1510;
+    --ash: #8c7b6b;
+    --ember: #c4622d;
+    --smoke: #d4c9bc;
+    --paper: #f5efe6;
+    --deep: #0d0a07;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: var(--deep); scroll-behavior: smooth; }
+  body {
+    background: var(--deep);
+    color: var(--smoke);
+    font-family: 'Noto Serif KR', 'Noto Serif JP', serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+
+  /* 화지 질감 — SVG 노이즈 필터 직접 렌더링 */
+  .paper-layer {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .paper-layer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    opacity: 0.07;
+    mix-blend-mode: screen;
+  }
+  /* 화지 섬유 결 — 미세 가로선 */
+  .paper-layer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 3px,
+      rgba(200,180,150,0.04) 3px,
+      rgba(200,180,150,0.04) 4px
+    );
+    opacity: 1;
+  }
+  /* 화면 가장자리 번짐 */
+  .vignette-layer {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 9;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 35%,
+      rgba(5,3,1,0.7) 100%
+    );
+  }
+  /* 불꽃빛 번짐 */
+  .burn-layer {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 8;
+    background:
+      radial-gradient(ellipse 80% 35% at 50% 100%, rgba(196,98,45,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 20% at 50% 0%,   rgba(80,40,10,0.10)  0%, transparent 70%);
+  }
+
+
+  .smoke-layer {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .smoke-particle {
+    position: absolute;
+    bottom: -100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(120,80,40,0.06) 0%, transparent 70%);
+    animation: smokeRise linear infinite;
+    filter: blur(40px);
+  }
+  .smoke-particle:nth-child(1) { left:10%; animation-duration:18s; animation-delay:0s;  width:200px; height:200px; }
+  .smoke-particle:nth-child(2) { left:30%; animation-duration:24s; animation-delay:4s;  width:350px; height:350px; }
+  .smoke-particle:nth-child(3) { left:55%; animation-duration:20s; animation-delay:8s;  width:250px; height:250px; }
+  .smoke-particle:nth-child(4) { left:75%; animation-duration:22s; animation-delay:2s;  width:280px; height:280px; }
+  .smoke-particle:nth-child(5) { left:90%; animation-duration:16s; animation-delay:12s; width:180px; height:180px; }
+  @keyframes smokeRise {
+    0%   { transform: translateY(0) scale(1);   opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 0.4; }
+    100% { transform: translateY(-110vh) scale(2.5); opacity: 0; }
+  }
+
+  .ember-layer {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .ember-dot {
+    position: absolute;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: var(--ember);
+    box-shadow: 0 0 6px 2px rgba(196,98,45,0.6);
+    animation: emberFloat linear infinite;
+    opacity: 0;
+  }
+  .ember-dot:nth-child(1)  { left:15%; animation-duration:8s;  animation-delay:0s;  top:80%; }
+  .ember-dot:nth-child(2)  { left:28%; animation-duration:11s; animation-delay:2s;  top:90%; }
+  .ember-dot:nth-child(3)  { left:42%; animation-duration:9s;  animation-delay:5s;  top:75%; }
+  .ember-dot:nth-child(4)  { left:60%; animation-duration:13s; animation-delay:1s;  top:85%; }
+  .ember-dot:nth-child(5)  { left:72%; animation-duration:7s;  animation-delay:7s;  top:80%; }
+  .ember-dot:nth-child(6)  { left:85%; animation-duration:10s; animation-delay:3s;  top:70%; }
+  .ember-dot:nth-child(7)  { left:8%;  animation-duration:12s; animation-delay:9s;  top:88%; }
+  .ember-dot:nth-child(8)  { left:50%; animation-duration:6s;  animation-delay:4s;  top:95%; }
+  .ember-dot:nth-child(9)  { left:35%; animation-duration:14s; animation-delay:6s;  top:78%; }
+  .ember-dot:nth-child(10) { left:90%; animation-duration:8s;  animation-delay:11s; top:82%; }
+  @keyframes emberFloat {
+    0%   { transform:translateY(0) translateX(0);    opacity:0; }
+    5%   { opacity:1; }
+    50%  { transform:translateY(-50vh) translateX(30px);  opacity:0.8; }
+    100% { transform:translateY(-100vh) translateX(-20px); opacity:0; }
+  }
+
+  .page-wrapper {
+    position: relative;
+    z-index: 2;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 100px 40px 160px;
+  }
+
+  .title-block {
+    text-align: center;
+    margin-bottom: 100px;
+    opacity: 0;
+    animation: fadeUp 1.8s ease forwards;
+    animation-delay: 0.4s;
+  }
+  .series-label {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--ash);
+    margin-bottom: 24px;
+    display: block;
+  }
+  .main-title {
+    font-family: 'Shippori Mincho', serif;
+    font-size: clamp(42px, 8vw, 72px);
+    font-weight: 400;
+    color: var(--paper);
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  .subtitle {
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    color: var(--ash);
+    margin-top: 8px;
+  }
+  .title-divider {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, transparent, var(--ember), transparent);
+    margin: 32px auto 0;
+  }
+
+  .illust-block {
+    width: 100%;
+    margin: 60px 0;
+    opacity: 0;
+    animation: fadeUp 1.4s ease forwards;
+  }
+  .illust-frame {
+    width: 100%;
+    aspect-ratio: 3/2;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(140,123,107,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .illust-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(196,98,45,0.04) 0%, transparent 60%);
+  }
+  .illust-frame::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(to top, rgba(13,10,7,0.6), transparent);
+  }
+  .illust-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: rgba(140,123,107,0.4);
+    z-index: 1;
+  }
+  .illust-placeholder svg { width:36px; height:36px; opacity:0.4; }
+  .illust-placeholder span { font-size:10px; letter-spacing:0.3em; }
+  .illust-caption {
+    margin-top: 12px;
+    text-align: right;
+    font-size: 11px;
+    color: var(--ash);
+    letter-spacing: 0.2em;
+    font-style: italic;
+  }
+
+  /* 삽화 블록 애니메이션 딜레이 */
+  .illust-block.d1 { animation-delay: 0.8s; }
+  .illust-block.d2 { animation-delay: 1.6s; }
+  .illust-block.d3 { animation-delay: 2.2s; }
+
+  .section {
+    margin-bottom: 0;
+    opacity: 0;
+    animation: fadeUp 1.4s ease forwards;
+  }
+  .section.d1 { animation-delay: 0.6s; }
+  .section.d2 { animation-delay: 0.9s; }
+  .section.d3 { animation-delay: 1.2s; }
+  .section.d4 { animation-delay: 1.5s; }
+  .section.d5 { animation-delay: 1.8s; }
+  .section.d6 { animation-delay: 2.1s; }
+
+  p {
+    font-size: clamp(14px, 2vw, 16px);
+    line-height: 2.4;
+    color: rgba(212,201,188,0.85);
+    letter-spacing: 0.05em;
+    margin-bottom: 1.6em;
+    word-break: keep-all;
+  }
+  p:last-child { margin-bottom: 0; }
+
+  .dialogue-block {
+    margin: 48px 0;
+    padding: 0 28px;
+    border-left: 1px solid rgba(196,98,45,0.3);
+  }
+  .dialogue-line {
+    font-size: clamp(14px, 2vw, 15px);
+    line-height: 2.6;
+    color: var(--smoke);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.2em;
+  }
+
+  .monologue-block {
+    margin: 60px auto;
+    max-width: 560px;
+    text-align: center;
+    padding: 48px 32px;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 1.6s ease forwards;
+    animation-delay: 1.9s;
+  }
+  .monologue-block::before,
+  .monologue-block::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px; height: 1px;
+    background: linear-gradient(to right, transparent, var(--ember), transparent);
+  }
+  .monologue-block::before { top: 0; }
+  .monologue-block::after  { bottom: 0; }
+  .monologue-line {
+    font-family: 'Shippori Mincho', serif;
+    font-size: clamp(15px, 2.2vw, 18px);
+    line-height: 2.8;
+    color: var(--paper);
+    letter-spacing: 0.12em;
+    display: block;
+    opacity: 0.92;
+  }
+
+  .scene-break {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 56px 0;
+    color: var(--ash);
+    font-size: 10px;
+    letter-spacing: 0.4em;
+  }
+  .scene-break::before,
+  .scene-break::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+  }
+  .scene-break::before { background: linear-gradient(to right, transparent, rgba(140,123,107,0.3)); }
+  .scene-break::after  { background: linear-gradient(to left,  transparent, rgba(140,123,107,0.3)); }
+
+  .final-line {
+    text-align: center;
+    margin-top: 80px;
+    padding-top: 60px;
+    border-top: 1px solid rgba(140,123,107,0.15);
+    opacity: 0;
+    animation: fadeUp 1.4s ease forwards;
+    animation-delay: 2.4s;
+  }
+  .final-line p {
+    font-family: 'Shippori Mincho', serif;
+    font-size: clamp(13px, 2vw, 15px);
+    color: var(--ash);
+    letter-spacing: 0.3em;
+    line-height: 2.8;
+    margin: 0;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(24px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  ::-webkit-scrollbar { width:4px; }
+  ::-webkit-scrollbar-track { background:var(--deep); }
+  ::-webkit-scrollbar-thumb { background:rgba(140,123,107,0.3); border-radius:2px; }
+</style>
+</head>
+<body>
+
+<!-- 화지 질감 -->
+<div class="burn-layer"></div>
+<div class="vignette-layer"></div>
+<div class="paper-layer"></div>
+
+<div class="smoke-layer">
+  <div class="smoke-particle"></div>
+  <div class="smoke-particle"></div>
+  <div class="smoke-particle"></div>
+  <div class="smoke-particle"></div>
+  <div class="smoke-particle"></div>
+</div>
+
+<div class="ember-layer">
+  <div class="ember-dot"></div>
+  <div class="ember-dot"></div>
+  <div class="ember-dot"></div>
+  <div class="ember-dot"></div>
+  <div class="ember-dot"></div>
+  <div class="ember-dot"></div>
+  <div class="ember-dot"></div>
+  <div class="ember-dot"></div>
+  <div class="ember-dot"></div>
+  <div class="ember-dot"></div>
+</div>
+
+<div class="page-wrapper">
+
+  <div class="title-block">
+    <span class="series-label">無限の夢幻 &mdash; 파국 엔딩</span>
+    <h1 class="main-title">夢の果て</h1>
+    <p class="subtitle">꿈의 끝에서</p>
+    <div class="title-divider"></div>
+  </div>
+
+  <!-- 삽화 0 : 불타는 대학 -->
+  <div class="illust-block d1">
+    <div class="illust-frame">
+      <img src="https://raw.githubusercontent.com/wataharu0/noir/refs/heads/main/MUEEND-0.webp" alt="불타는 大学" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
+    <p class="illust-caption">불타는 大学 — 永安京</p>
+  </div>
+
+  <div class="section d1">
+    <p>새로운 태양을 자처하는 무리들이 결국 永安京의 앞까지 도달했다는 소식이 들려온 것은, 아직 해가 중천에 있을 무렵이었다.</p>
+    <p>사람들의 비명이 멀리서부터 흘러들었다. 시장 거리였다. 그 다음은 문 앞 거리였다. 소리는 점점 가까워졌고, 연기가 하늘을 물들이기 시작했다.</p>
+    <p>권력을 탐하던 左大臣은 이미 사라지고 없었다.</p>
+  </div>
+
+  <div class="scene-break">◆</div>
+
+  <div class="section d2">
+    <p>누가 먼저인지도 모르게, 大学 안의 사람들이 움직이기 시작했다. 학생들이 뛰었다. 학사들이 소리쳤다. 누군가 넘어졌다. 누군가 일으켰다.</p>
+    <p>高麗 連風이 강의실 문을 열었다. 평소와 달랐다. 문을 두드리지 않았다. 목소리에 금이 가 있었다.</p>
+    <div class="dialogue-block">
+      <p class="dialogue-line">「지금 당장 나오십시오. 지체할 시간이 없습니다.」</p>
+    </div>
+    <p>그는 U의 팔을 잡으려 했다. 처음 있는 일이었다. 언제나 일정한 거리를 두던 그가, 처음으로 그 선을 넘었다.</p>
+    <p>U는 움직이지 않았다.</p>
+    <p>連風의 시선이 흔들렸다. 그것도 처음 있는 일이었다. 언제나 냉정하던 눈이, 처음으로 무언가를 잃은 것처럼 보였다.</p>
+    <p>그는 더 이상 말하지 않았다. 잡으려던 손을 거두었다. 한 번 더 U를 보았다. 그리고 돌아섰다.</p>
+    <p>발소리가 멀어졌다. 충성이란 때로는 두고 가는 것이기도 하다는 것을, 連風은 알고 있었을 것이다.</p>
+    <p>강의실 안이 조용해졌다. 발밑에서 불의 열기가 느껴졌다. 멀지 않았다.</p>
+    <p>그때 다른 발소리가 들렸다.</p>
+  </div>
+
+  <div class="scene-break">◆</div>
+
+  <!-- 삽화 1 : 하늘을 보고 울음을 참던 시로가 뒤돌아보는 순간 -->
+  <div class="illust-block d2">
+    <div class="illust-frame">
+      <img src="https://raw.githubusercontent.com/wataharu0/noir/refs/heads/main/MUEEND-1.webp" alt="뒤돌아보는 시로마에" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
+    <p class="illust-caption">울음을 참던 눈이, 뒤를 돌았다</p>
+  </div>
+
+  <div class="section d3">
+    <div class="dialogue-block">
+      <p class="dialogue-line">「시로.」</p>
+      <p class="dialogue-line">목소리를 듣는 순간, 시로마에는 뒤돌아보았다. 하늘을 올려다보며 참고 있던 것들이, 그 한 마디에 흔들렸다.</p>
+      <p class="dialogue-line">「……학사님.」</p>
+      <p class="dialogue-line">「왜 여기 있어.」</p>
+      <p class="dialogue-line">「여기 있고 싶어서요.」</p>
+    </div>
+    <p>대답은 그것뿐이었다. 더 이상의 말은 없었다. 필요하지 않았다.</p>
+    <p>발소리가 가까워졌다. 그리고 멈췄다.</p>
+  </div>
+
+  <div class="scene-break">◆</div>
+
+  <!-- 삽화 2 : 슬프게 웃으며 U를 껴안는 시로 -->
+  <div class="illust-block d3">
+    <div class="illust-frame">
+      <img src="https://raw.githubusercontent.com/wataharu0/noir/refs/heads/main/MUEEND-2.webp" alt="U를 껴안는 시로마에" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
+    <p class="illust-caption">슬프게 웃으며, 껴안았다</p>
+  </div>
+
+  <div class="section d4">
+    <p>시로마에는 먼저 팔을 뻗었다. 기다리지 않았다. 등 뒤에서 온기가 닿기 전에, 먼저 안았다.</p>
+    <p>웃고 있었다. 울면서 웃고 있었다. 그것이 시로마에다웠다.</p>
+  </div>
+
+  <div class="scene-break">◆</div>
+
+  <div class="section d4">
+    <p>반란의 무리는 결국 大学에 불을 질렀다.</p>
+    <p>그들은 몰랐다. 자신들이 그토록 찾아 헤매던 帝가 이 안에 있다는 것을. 그리고 이제는 다시 찾을 수 없게 된다는 것을.</p>
+    <p>불길이 강의실 쪽으로 번졌다. 서고가 먼저 무너졌다. 중정의 나무가 타기 시작했다.</p>
+  </div>
+
+  <!-- 독백 -->
+  <div class="monologue-block">
+    <span class="monologue-line">아아, 학사님.</span>
+    <span class="monologue-line">여기에 있는 우리들이 세계의 전부예요.</span>
+    <span class="monologue-line">더 이상 떨어지지 말아요.</span>
+    <span class="monologue-line">만약 이 몸이 재가 된다 하더라도,</span>
+    <span class="monologue-line">당신의 곁에 있다면, 그걸로 좋아요.</span>
+  </div>
+
+  <!-- 삽화 3 : 시로마에 품 속에서 죽어가는 U, 웃으며 우는 시로 -->
+  <div class="illust-block d3">
+    <div class="illust-frame">
+      <img src="https://raw.githubusercontent.com/wataharu0/noir/refs/heads/main/MUEEND-3.webp" alt="죽어가는 U와 시로마에" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
+    <p class="illust-caption">웃으며 울었다. 그 끝까지.</p>
+  </div>
+
+  <div class="section d5">
+    <p>연기가 짙어졌다. 열기가 가까워졌다.</p>
+    <p>시로마에는 팔에 힘을 주었다. 그 온기를 놓지 않으려는 것처럼.</p>
+    <p>밖에서는 아직도 비명이 들렸다. 불이 번지는 소리가 들렸다. 무언가 무너지는 소리가 들렸다.</p>
+    <p>그러나 이 안은 조용했다.</p>
+  </div>
+
+  <div class="scene-break">◆</div>
+
+  <!-- 삽화 4 : 죽은 U를 쓰다듬으며 따오기 날개가 돋는 시로마에 -->
+  <div class="illust-block d3">
+    <div class="illust-frame">
+      <img src="https://raw.githubusercontent.com/wataharu0/noir/refs/heads/main/MUEEND-4.webp" alt="따오기 날개가 돋는 시로마에" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
+    <p class="illust-caption">천년 묵은 것이, 마지막으로 모습을 드러냈다</p>
+  </div>
+
+  <div class="section d5">
+    <p>그 손이 천천히 움직였다. 머리카락을 쓸어내렸다. 조용하게, 조용하게.</p>
+    <p>등에서 무언가가 피어났다. 흰 것이었다. 불빛 속에서도 희었다. 타지 않는 깃털이 불꽃 사이로 펼쳐졌다.</p>
+    <p>천년 묵은 것이, 마지막으로 모습을 드러냈다. 시로마에는 알지 못했다. 끝까지 몰랐다.</p>
+  </div>
+
+  <div class="final-line">
+    <p>마지막까지, 조용했다.</p>
+    <p>마지막까지, 웃고 있었다.</p>
+  </div>
+
+</div>
+</body>
+</html>
